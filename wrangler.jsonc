@@ -8,5 +8,13 @@
   "assets": {
     "directory": "./",
     "binding": "ASSETS"
-  }
+  },
+  // Ma'lumotlar bazasi (Cloudflare D1): admin panel tovarlari va rasmlari
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "aliyevs-store-db",
+      "database_id": "508d4d19-9079-4cac-8893-bc92aca28dc1"
+    }
+  ]
 }
