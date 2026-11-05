@@ -375,28 +375,28 @@ body::before {
   min-width: 0;
 }
 .qidiruv-maydon svg { width: 18px; height: 18px; fill: none; stroke: var(--matn-2); stroke-width: 1.8; stroke-linecap: round; flex-shrink: 0; }
-.qidiruv-maydon input { border: 0; outline: 0; background: transparent; color: var(--matn); font: inherit; font-size: 15px; width: 230px; min-width: 0; }
+.qidiruv-maydon input { border: 0; outline: 0; background: transparent; color: var(--matn); font: inherit; font-family: var(--f-brend); font-weight: 500; font-size: 14.5px; width: 230px; min-width: 0; }
 .qidiruv-maydon input::placeholder { color: #6e6c67; }
-select.glow-maydon {
+select.glow-maydon { font-family: var(--f-brend); font-weight: 500;
   height: 46px; padding: 0 40px 0 16px; border-radius: 999px;
   background: var(--sirt) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23a19f99' stroke-width='1.8'%3E%3Cpath d='m1 1.5 5 5 5-5'/%3E%3C/svg%3E") no-repeat right 16px center;
-  border: 1px solid var(--chiziq); color: var(--matn); font: inherit; font-size: 15px;
+  border: 1px solid var(--chiziq); color: var(--matn); font-size: 14.5px;
   appearance: none; cursor: pointer;
 }
 
 .tablar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 28px 0 24px; }
-.tab {
+.tab { font-family: var(--f-brend); font-weight: 500;
   display: inline-flex; align-items: center; gap: 8px;
   height: 40px; padding: 0 16px; border-radius: 999px;
   border: 1px solid var(--chiziq); background: transparent;
-  font-weight: 600; font-size: 14px; color: var(--matn-2); cursor: pointer;
+  font-size: 14px; color: var(--matn-2); cursor: pointer;
 }
-.tab span { font-family: var(--f-mono); font-size: 11px; padding: 2px 7px; border-radius: 999px; background: var(--sirt-2); color: var(--matn-2); }
+.tab span { font-family: var(--f-brend); font-weight: 600; font-size: 11px; padding: 2px 7px; border-radius: 999px; background: var(--sirt-2); color: var(--matn-2); }
 .tab:hover { color: var(--matn); }
 .tab.faol { background: var(--matn); color: #0b0b0c; border-color: var(--matn); }
 .tab.faol span { background: #0b0b0c; color: var(--matn); }
 .tab:active { background: var(--aksent); color: #0b0b0c; }
-.natija-soni { margin-left: auto; font-family: var(--f-mono); font-size: 12px; color: var(--matn-2); }
+.natija-soni { margin-left: auto; font-family: var(--f-brend); font-weight: 500; font-size: 12px; color: var(--matn-2); }
 
 .katalog {
   display: grid; gap: 20px;
@@ -470,12 +470,12 @@ select.glow-maydon {
 
 .karta-info { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px 16px; flex: 1; min-width: 0; }
 .karta-media { flex-shrink: 0; }
-.karta-turkum { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--matn-2); }
-.karta h3 { font-family: var(--f-matn); font-weight: 700; font-size: 16px; line-height: 1.3; cursor: pointer; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.6em; }
+.karta-turkum { font-family: var(--f-brend); font-weight: 500; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--matn-2); }
+.karta h3 { font-family: var(--f-brend); font-weight: 500; font-size: 15px; line-height: 1.35; letter-spacing: .005em; cursor: pointer; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.6em; }
 .karta h3:hover { color: var(--aksent-yorug); }
 .narx { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-variant-numeric: tabular-nums; }
-.narx span { font-family: var(--f-brend); font-weight: 700; font-size: 16px; letter-spacing: .01em; }
-.narx s { font-size: 13px; color: var(--matn-2); }
+.narx span { font-family: var(--f-brend); font-weight: 600; font-size: 15.5px; letter-spacing: .01em; }
+.narx s { font-family: var(--f-brend); font-weight: 500; font-size: 12.5px; color: var(--matn-2); }
 
 .ranglar { display: flex; flex-wrap: nowrap; gap: 8px; align-items: center; height: 30px; padding: 0 3px; margin-left: -3px; overflow: visible; }
 .karta .narx { min-height: 2.9em; align-content: flex-start; }
@@ -489,12 +489,13 @@ select.glow-maydon {
 .rang.faol { box-shadow: 0 0 0 2px var(--aksent); }
 .rang:active { transform: scale(.88); }
 .rang:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--aksent-yorug), 0 0 14px var(--aksent-xira); }
-.rang-nomi { font-size: 12.5px; color: var(--matn-2); }
-.karta-tugma { margin-top: auto; min-height: 42px; font-size: 14px; }
+.rang-nomi { font-family: var(--f-brend); font-weight: 500; font-size: 12.5px; color: var(--matn-2); }
+.karta-tugma { margin-top: auto; min-height: 42px; font-size: 14px; font-family: var(--f-brend); font-weight: 500; }
 .karta-info .karta-tugma { margin-top: auto; }
 .karta-info .ranglar { margin-bottom: 8px; }
 
 .bosh { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 56px 16px; text-align: center; color: var(--matn-2); border: 1px dashed var(--chiziq); border-radius: var(--r); }
+.bosh { font-family: var(--f-brend); }
 .bosh strong { color: var(--matn); font-size: 17px; }
 
 /* =====================================================================
@@ -555,8 +556,21 @@ select.glow-maydon {
   border-top: 1px solid #1d1d20;
 }
 .pastki .pastki-past p { display: block; margin: 0; font-size: 13px; color: #8e8b84; }
-.pastki .savol a { color: var(--matn); font-weight: 600; }
-.pastki .savol a:hover { color: var(--aksent-yorug); }
+.savol { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-family: var(--f-brend); font-weight: 500; font-size: 13px; color: #8e8b84; }
+.pastki a.tg-mini {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 4px 12px 4px 4px; border-radius: 999px;
+  background: var(--sirt); border: 1px solid var(--chiziq); color: var(--matn);
+  background-image: none;
+}
+.tg-mini svg { width: 26px; height: 26px; padding: 6px; border-radius: 50%; background: var(--aksent); fill: none; stroke: #0b0b0c; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; transition: transform .3s; }
+.tg-mini span { display: flex; flex-direction: column; line-height: 1.15; }
+.tg-mini small { font-family: var(--f-brend); font-weight: 500; font-size: 8.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--matn-2); }
+.tg-mini b { font-family: var(--f-brend); font-weight: 600; font-size: 12.5px; }
+.tg-mini i { font-style: normal; font-size: 12px; color: var(--aksent); transition: transform .3s; }
+.pastki a.tg-mini:hover { background: var(--sirt-2); color: var(--matn); }
+.tg-mini:hover svg { transform: rotate(-12deg); }
+.tg-mini:hover i { transform: translate(2px, -2px); }
 
 /* =====================================================================
    SAVATCHA
@@ -788,10 +802,10 @@ dialog::backdrop { background: rgba(0,0,0,.7); backdrop-filter: blur(4px); }
   .boshqaruv { width: 100%; }
   .qidiruv-maydon { flex: 1 1 100%; }
   .qidiruv-maydon input { width: 100%; }
-  select.glow-maydon { flex: 1; }
+  select.glow-maydon { font-family: var(--f-brend); font-weight: 500; flex: 1; }
   .tablar { gap: 6px; margin: 20px 0 16px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 2px; margin-inline: -2px; }
   .tablar::-webkit-scrollbar { display: none; }
-  .tab { flex-shrink: 0; height: 36px; padding: 0 12px; font-size: 13px; }
+  .tab { font-family: var(--f-brend); font-weight: 500; flex-shrink: 0; height: 36px; padding: 0 12px; font-size: 13px; }
   .natija-soni { display: none; }
 
   /* 3 ustunli ixcham kartalar */
