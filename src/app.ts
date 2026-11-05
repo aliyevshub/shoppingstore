@@ -721,6 +721,13 @@ function hodisalar(): void {
     }
   });
 
+  // Hero sarlavhasi: telefonda bosganda bir marta to'lqin
+  const sarlavha = $(".hero-sarlavha");
+  sarlavha.addEventListener("click", () => {
+    sarlavha.classList.add("tolqin");
+    window.setTimeout(() => sarlavha.classList.remove("tolqin"), 900);
+  });
+
   // Header soyasi (skroll qilinganda)
   const header = $(".menyu");
   const soya = () => header.classList.toggle("suzuvchi", window.scrollY > 8);
