@@ -15,13 +15,21 @@ const DOKON = {
 };
 
 // ---- Tiplar ----
-type Turkum = "sport" | "boshqa";
+type Turkum = "sport" | "casual";
 type Tur = "kiyim" | "poyabzal";
 
 interface Variant {
   rang: string;      // "Qora"
   hex: string;       // rang doirachasi uchun
   rasmlar: string[]; // img/ papkasidagi fayllar (birinchisi asosiy)
+}
+
+// Haqiqiy xaridorlar otzivi (Telegram orqali kelganlarini shu yerga qo'shing)
+interface Otziv {
+  ism: string;
+  baho: 1 | 2 | 3 | 4 | 5;
+  matn: string;
+  sana: string; // "2026-11-05"
 }
 
 interface Mahsulot {
@@ -34,9 +42,10 @@ interface Mahsulot {
   eskiNarx?: number;  // chegirma bo'lsa
   yangi?: boolean;
   variantlar: Variant[];
+  otzivlar?: Otziv[];
 }
 
-const TURKUM_NOMLARI: Record<Turkum, string> = { sport: "Sport", boshqa: "Boshqa" };
+const TURKUM_NOMLARI: Record<Turkum, string> = { sport: "Sport", casual: "Casual" };
 
 const KIYIM_OLCHAM = ["S", "M", "L", "XL", "XXL"];
 const POYABZAL_OLCHAM = ["39", "40", "41", "42", "43", "44"];
@@ -90,24 +99,24 @@ const mahsulotlar: Mahsulot[] = [
     ],
   },
 
-  // ======================== BOSHQA ========================
+  // ======================== CASUAL ========================
   {
-    id: 7, nomi: "Tvid kurtka kapyushonli", turkum: "boshqa", tur: "kiyim", narx: 690000, yangi: true,
+    id: 7, nomi: "Tvid kurtka kapyushonli", turkum: "casual", tur: "kiyim", narx: 690000, yangi: true,
     tavsif: "Qora-oq tvid to'qima, ikki tomonlama zamok, trikotaj etak va yeng.",
     variantlar: [v("Qora-oq", "#6f6f6f", "p07-1", "p07-2", "p07-3", "p07-4")],
   },
   {
-    id: 2, nomi: "Charm kurtka, velvet yoqa", turkum: "boshqa", tur: "kiyim", narx: 790000, eskiNarx: 890000,
+    id: 2, nomi: "Charm kurtka, velvet yoqa", turkum: "casual", tur: "kiyim", narx: 790000, eskiNarx: 890000,
     tavsif: "Yumshoq eko-charm, jigarrang velvet yoqa, katta cho'ntaklar.",
     variantlar: [v("Qora", "#1b1d22", "p02-1", "p02-2", "p02-3")],
   },
   {
-    id: 1, nomi: "Ish kurtkasi, velvet yoqa", turkum: "boshqa", tur: "kiyim", narx: 590000,
+    id: 1, nomi: "Ish kurtkasi, velvet yoqa", turkum: "casual", tur: "kiyim", narx: 590000,
     tavsif: "Zich kanvas mato, ko'krak cho'ntaklari, issiq astar.",
     variantlar: [v("Jigarrang", "#4a3a2c", "p01-1")],
   },
   {
-    id: 5, nomi: "Klassik bomber", turkum: "boshqa", tur: "kiyim", narx: 490000,
+    id: 5, nomi: "Klassik bomber", turkum: "casual", tur: "kiyim", narx: 490000,
     tavsif: "Tik yoqa, trikotaj etak va manjetlar. Har qanday kiyim bilan mos.",
     variantlar: [
       v("To'q ko'k", "#24304a", "p05-kok-1"),
@@ -115,12 +124,12 @@ const mahsulotlar: Mahsulot[] = [
     ],
   },
   {
-    id: 8, nomi: "Bej bomber", turkum: "boshqa", tur: "kiyim", narx: 550000,
+    id: 8, nomi: "Bej bomber", turkum: "casual", tur: "kiyim", narx: 550000,
     tavsif: "Silliq neylon, ichi issiq astar, tik yoqa.",
     variantlar: [v("Bej", "#a39068", "p08-1")],
   },
   {
-    id: 9, nomi: "Kapyushonli bomber", turkum: "boshqa", tur: "kiyim", narx: 590000, eskiNarx: 690000,
+    id: 9, nomi: "Kapyushonli bomber", turkum: "casual", tur: "kiyim", narx: 590000, eskiNarx: 690000,
     tavsif: "Yuvilgan kanvas, katakli astar, ko'krakda zamokli cho'ntak.",
     variantlar: [
       v("Zaytun", "#8b8579", "p09-zaytun-1"),
@@ -128,7 +137,7 @@ const mahsulotlar: Mahsulot[] = [
     ],
   },
   {
-    id: 11, nomi: "Velvet kostyum", turkum: "boshqa", tur: "kiyim", narx: 650000,
+    id: 11, nomi: "Velvet kostyum", turkum: "casual", tur: "kiyim", narx: 650000,
     tavsif: "Kurtka va shim to'plami. Yumshoq velvet, zamokli kurtka.",
     variantlar: [
       v("Bordo", "#7a1f2c", "p11-bordo-1"),
@@ -137,7 +146,7 @@ const mahsulotlar: Mahsulot[] = [
     ],
   },
   {
-    id: 12, nomi: "To'qilgan zip-kofta", turkum: "boshqa", tur: "kiyim", narx: 340000,
+    id: 12, nomi: "To'qilgan zip-kofta", turkum: "casual", tur: "kiyim", narx: 340000,
     tavsif: "Rezinka to'qima, ag'darma yoqa, ikki yon cho'ntak.",
     variantlar: [
       v("Qora", "#14161c", "p12-qora-1"),
@@ -145,7 +154,7 @@ const mahsulotlar: Mahsulot[] = [
     ],
   },
   {
-    id: 14, nomi: "Zamsh baland krossovka", turkum: "boshqa", tur: "poyabzal", narx: 520000, yangi: true,
+    id: 14, nomi: "Zamsh baland krossovka", turkum: "casual", tur: "poyabzal", narx: 520000, yangi: true,
     tavsif: "Tabiiy zamsh, qalin oq taglik, yo'g'on bog'ich.",
     variantlar: [
       v("Qora", "#151515", "p14-qora-1"),
@@ -155,7 +164,7 @@ const mahsulotlar: Mahsulot[] = [
     ],
   },
   {
-    id: 17, nomi: "Zamsh past krossovka", turkum: "boshqa", tur: "poyabzal", narx: 490000,
+    id: 17, nomi: "Zamsh past krossovka", turkum: "casual", tur: "poyabzal", narx: 490000,
     tavsif: "Yumshoq zamsh, qalin taglik. To'rt rangda mavjud.",
     variantlar: [
       v("Qora", "#151515", "p17-qora-1"),
@@ -163,12 +172,12 @@ const mahsulotlar: Mahsulot[] = [
     ],
   },
   {
-    id: 18, nomi: "Bog'ichsiz charm krossovka", turkum: "boshqa", tur: "poyabzal", narx: 420000,
+    id: 18, nomi: "Bog'ichsiz charm krossovka", turkum: "casual", tur: "poyabzal", narx: 420000,
     tavsif: "Silliq charm, rezinkali qo'yilma. Oson kiyiladi.",
     variantlar: [v("Qora / oq", "#121212", "p18-1")],
   },
   {
-    id: 15, nomi: "Charm keda", turkum: "boshqa", tur: "poyabzal", narx: 290000,
+    id: 15, nomi: "Charm keda", turkum: "casual", tur: "poyabzal", narx: 290000,
     tavsif: "Klassik shakl, eko-charm, yumshoq ichki qism.",
     variantlar: [
       v("Oq", "#f1f0ec", "p15-oq-1"),
@@ -176,12 +185,12 @@ const mahsulotlar: Mahsulot[] = [
     ],
   },
   {
-    id: 16, nomi: "Kanvas keda", turkum: "boshqa", tur: "poyabzal", narx: 240000,
+    id: 16, nomi: "Kanvas keda", turkum: "casual", tur: "poyabzal", narx: 240000,
     tavsif: "Qora kanvas, oq chiziqli rezina taglik.",
     variantlar: [v("Qora", "#18181a", "p16-1")],
   },
   {
-    id: 20, nomi: "Zamsh loafer-botinka", turkum: "boshqa", tur: "poyabzal", narx: 680000,
+    id: 20, nomi: "Zamsh loafer-botinka", turkum: "casual", tur: "poyabzal", narx: 680000,
     tavsif: "To'q ko'k zamsh, yengil oq taglik. Bog'ichsiz, nafis.",
     variantlar: [v("To'q ko'k", "#1f2742", "p20-1")],
   },

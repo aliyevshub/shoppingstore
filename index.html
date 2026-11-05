@@ -10,7 +10,7 @@
   <link rel="apple-touch-icon" href="favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,7 +24,7 @@
       <nav class="havolalar" aria-label="Asosiy menyu">
         <a href="#katalog-bolim" class="glow">Katalog</a>
         <a href="#katalog-bolim" class="glow" data-filtr="sport">Sport</a>
-        <a href="#katalog-bolim" class="glow" data-filtr="boshqa">Boshqa</a>
+        <a href="#katalog-bolim" class="glow" data-filtr="casual">Casual</a>
         <a href="#aloqa" class="glow">Aloqa</a>
       </nav>
 
@@ -55,11 +55,11 @@
       </div>
       <div class="hero-ichi">
         <div class="hero-matn">
-          <p class="hero-pill"><span class="tirik"></span>Yangi tovarlar har hafta · Andijon</p>
+          <p class="hero-pill"><span class="tirik"></span>Sizning uslubingiz, bizning tanlovimiz</p>
           <h1 class="hero-sarlavha">
-            <span class="q q1">Kiy.</span>
-            <span class="q q2">Yur.</span>
-            <span class="q q3">Esda qol.</span>
+            <span class="q q1">Uslubni</span>
+            <span class="q q2">siz</span>
+            <span class="q q3">tanlaysiz.</span>
           </h1>
           <p class="hero-izoh">Kurtka, hudi va krossovkalar — har biri qo'lda tanlangan. Buyurtma Telegram orqali, Andijon bo'ylab yetkazib berish ertasigayoq.</p>
           <div class="hero-tugmalar">
@@ -93,23 +93,18 @@
 
     <!-- ================= YUGURUVCHI LENTA ================= -->
     <div class="lenta" aria-hidden="true">
-      <div class="lenta-ichi">
-        <span>Yangi kolleksiya</span><i>◢</i><span>Andijon bo'ylab yetkazib berish</span><i>◢</i><span>14 kun ichida almashtirish</span><i>◢</i><span>Telegram orqali buyurtma</span><i>◢</i>
-        <span>Yangi kolleksiya</span><i>◢</i><span>Andijon bo'ylab yetkazib berish</span><i>◢</i><span>14 kun ichida almashtirish</span><i>◢</i><span>Telegram orqali buyurtma</span><i>◢</i>
-      </div>
+      <div class="lenta-ichi"><span>Zamonaviy dizayn</span><i>✦</i><span>Yangi kolleksiya</span><i>✦</i><span>Andijon bo'ylab yetkazib berish</span><i>✦</i><span>14 kun ichida almashtirish</span><i>✦</i><span>Telegram orqali buyurtma</span><i>✦</i><span>Zamonaviy dizayn</span><i>✦</i><span>Yangi kolleksiya</span><i>✦</i><span>Andijon bo'ylab yetkazib berish</span><i>✦</i><span>14 kun ichida almashtirish</span><i>✦</i><span>Telegram orqali buyurtma</span><i>✦</i></div>
     </div>
 
     <!-- ================= TURKUMLAR ================= -->
     <section class="turkum-plitkalar bolim">
       <button class="plitka glow" data-filtr="sport" data-katalogga>
-        <img class="plitka-fon" src="img/p13-2.webp" alt="" loading="lazy" aria-hidden="true">
-        <img class="plitka-rasm" src="img/p13-2.webp" alt="" loading="lazy">
+        <img class="plitka-rasm" src="img/p13-2.webp" alt="" loading="lazy" style="--joy: 62% 62%">
         <span class="plitka-matn"><small>Kolleksiya</small><b>Sport</b><em><span data-sanoq="sport">6</span> ta model →</em></span>
       </button>
-      <button class="plitka glow" data-filtr="boshqa" data-katalogga>
-        <img class="plitka-fon" src="img/p02-2.webp" alt="" loading="lazy" aria-hidden="true">
-        <img class="plitka-rasm" src="img/p02-2.webp" alt="" loading="lazy">
-        <span class="plitka-matn"><small>Kolleksiya</small><b>Boshqa</b><em><span data-sanoq="boshqa">14</span> ta model →</em></span>
+      <button class="plitka glow" data-filtr="casual" data-katalogga>
+        <img class="plitka-rasm" src="img/p02-2.webp" alt="" loading="lazy" style="--joy: 60% 30%">
+        <span class="plitka-matn"><small>Kolleksiya</small><b>Casual</b><em><span data-sanoq="casual">14</span> ta model →</em></span>
       </button>
     </section>
 
@@ -137,7 +132,7 @@
       <div class="tablar" role="tablist" aria-label="Turkumlar">
         <button class="tab glow faol" role="tab" aria-selected="true" data-filtr="hammasi">Hammasi <span data-sanoq="hammasi">20</span></button>
         <button class="tab glow" role="tab" aria-selected="false" data-filtr="sport">Sport <span data-sanoq="sport">6</span></button>
-        <button class="tab glow" role="tab" aria-selected="false" data-filtr="boshqa">Boshqa <span data-sanoq="boshqa">14</span></button>
+        <button class="tab glow" role="tab" aria-selected="false" data-filtr="casual">Casual <span data-sanoq="casual">14</span></button>
         <button class="tab glow" role="tab" aria-selected="false" data-filtr="sevimli">♥ Sevimlilar <span data-sanoq="sevimli">0</span></button>
         <span id="natija-soni" class="natija-soni"></span>
       </div>
@@ -155,15 +150,15 @@
 
   <!-- ================= FOOTER ================= -->
   <footer id="aloqa" class="pastki">
+    <div class="pastki-fon" aria-hidden="true"><i class="d1"></i><i class="d2"></i><i class="d3"></i></div>
     <div class="pastki-cta">
       <div class="cta-matn">
         <p class="ustki">Aloqa</p>
-        <h2>Savolingiz bormi?<br><span>Telegramda yozing.</span></h2>
-        <p>Buyurtma, o'lcham yoki yetkazib berish haqida so'rang — shaxsan javob beramiz.</p>
+        <h2>Savol va takliflar uchun</h2>
       </div>
       <a class="tg-tugma glow" id="tg-katta" href="https://t.me/Aliyevvv_a" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4 3 11l6.5 2.2M21 4l-3 16-8.5-6.8M21 4 9.5 13.2V19l3-3.4"/></svg>
-        <span><small>Telegram</small><b id="tg-katta-nomi">@Aliyevvv_a</b></span>
+        <span><small>Telegram</small><b>@Aliyevvv_a</b></span>
         <i aria-hidden="true">↗</i>
       </a>
     </div>
@@ -182,7 +177,7 @@
       <div>
         <h4>Do'kon</h4>
         <p><a href="#katalog-bolim" data-filtr="sport">Sport</a></p>
-        <p><a href="#katalog-bolim" data-filtr="boshqa">Boshqa</a></p>
+        <p><a href="#katalog-bolim" data-filtr="casual">Casual</a></p>
         <p><a href="#katalog-bolim" data-filtr="sevimli">Sevimlilar</a></p>
       </div>
       <div>
@@ -192,8 +187,6 @@
         <p>14 kun almashtirish</p>
       </div>
     </div>
-
-    <div class="pastki-gigant" aria-hidden="true"><span>ALIYEVS</span><span>STORE</span></div>
     <p class="mualliflik">© <span id="yil">2026</span> <span data-dokon-nomi>Aliyevs Store</span> · Barcha huquqlar himoyalangan</p>
   </footer>
 

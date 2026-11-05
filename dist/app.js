@@ -132,7 +132,7 @@ function korinadiganlar() {
     const natija = mahsulotlar.filter((m) => {
         if (filtr === "sevimli" && !sevimlilar.has(m.id))
             return false;
-        if ((filtr === "sport" || filtr === "boshqa") && m.turkum !== filtr)
+        if ((filtr === "sport" || filtr === "casual") && m.turkum !== filtr)
             return false;
         if (q && !(m.nomi + " " + m.tavsif + " " + m.variantlar.map((x) => x.rang).join(" ")).toLowerCase().includes(q))
             return false;
@@ -193,7 +193,7 @@ function katalogniChiz() {
         joy.innerHTML =
             filtr === "sevimli"
                 ? `<div class="bosh"><strong>Sevimlilar hali bo'sh</strong><span>Tovar rasmidagi ♡ belgisini bosing, u shu yerda saqlanadi.</span></div>`
-                : `<div class="bosh"><strong>Hech narsa topilmadi</strong><span>Boshqa so'z bilan qidirib ko'ring yoki turkumni almashtiring.</span></div>`;
+                : `<div class="bosh"><strong>Hech narsa topilmadi</strong><span>Qidiruv so'zini o'zgartirib ko'ring yoki turkumni almashtiring.</span></div>`;
         return;
     }
     joy.innerHTML = royxat.map(kartaHTML).join("");
@@ -250,6 +250,7 @@ function tovarOynasiniOch(id) {
     oynaVariant = kartaVariant.get(id) ?? 0;
     oynaOlcham = "";
     oynaSoni = 1;
+    oynaBaho = 0;
     tovarOynasiniChiz();
     const d = $("#tovar-oyna");
     if (!d.open)
@@ -310,7 +311,81 @@ function tovarOynasiniChiz() {
         <li>14 kun ichida almashtirish</li>
         <li>To'lov qabul qilinganda: naqd yoki karta</li>
       </ul>
-    </div>`;
+    </div>
+    ${otzivlarHTML(m)}`;
+}
+// ---------------------------------------------------------------------
+// OTZIVLAR
+// ---------------------------------------------------------------------
+let oynaBaho = 0;
+function yulduzlar(baho) {
+    return `<span class="yulduzlar" aria-label="${baho} / 5">${[1, 2, 3, 4, 5].map((i) => `<i class="${i <= baho ? "tola" : ""}">★</i>`).join("")}</span>`;
+}
+function otzivlarHTML(m) {
+    const r = m.otzivlar ?? [];
+    const ortacha = r.length ? r.reduce((j, o) => j + o.baho, 0) / r.length : 0;
+    const royxat = r.length
+        ? r
+            .map((o) => `
+        <article class="otziv">
+          <div class="otziv-bosh">
+            <span class="otziv-avatar">${xavfsiz(o.ism.charAt(0).toUpperCase())}</span>
+            <div><strong>${xavfsiz(o.ism)}</strong><time>${xavfsiz(o.sana)}</time></div>
+            ${yulduzlar(o.baho)}
+          </div>
+          <p>${xavfsiz(o.matn)}</p>
+        </article>`)
+            .join("")
+        : `<div class="otziv-bosh-holat">
+        <span class="otziv-belgi" aria-hidden="true">✦</span>
+        <strong>Hali otziv yo'q</strong>
+        <span>Bu tovarni sotib olgan bo'lsangiz, birinchi bo'lib fikringizni qoldiring.</span>
+      </div>`;
+    return `
+  <section class="t-otzivlar" aria-labelledby="otziv-sarlavha">
+    <div class="otziv-ustki">
+      <h3 id="otziv-sarlavha">Otzivlar <span>${r.length}</span></h3>
+      ${r.length ? `<div class="otziv-ortacha">${yulduzlar(Math.round(ortacha))}<b>${ortacha.toFixed(1)}</b></div>` : ""}
+    </div>
+    <div class="otziv-ichi">
+      <div class="otziv-royxat">${royxat}</div>
+      <form class="otziv-forma" id="otziv-forma" novalidate>
+        <h4>Fikringizni qoldiring</h4>
+        <div class="baho-tanlash" role="radiogroup" aria-label="Baho">
+          ${[1, 2, 3, 4, 5]
+        .map((i) => `<button type="button" class="baho${i <= oynaBaho ? " faol" : ""}" data-baho="${i}" role="radio" aria-checked="${i === oynaBaho}" aria-label="${i} yulduz">★</button>`)
+        .join("")}
+          <span class="baho-matn">${oynaBaho ? ["", "Yomon", "O'rtacha emas", "Yaxshi", "Juda yaxshi", "A'lo!"][oynaBaho] : "Baho bering"}</span>
+        </div>
+        <label>Ismingiz<input id="o-ism" name="ism" autocomplete="given-name" required placeholder="Masalan: Jasur"></label>
+        <label>Fikringiz<textarea id="o-matn" name="matn" rows="3" required placeholder="O'lchami, sifati, yetkazib berish haqida…"></textarea></label>
+        <span class="t-xato" id="otziv-xato" hidden>Baho, ism va fikrni to'ldiring</span>
+        <button class="tugma asosiy glow toliq" type="submit">Telegram orqali yuborish</button>
+        <small class="otziv-izoh">Otzivlar tekshirilgandan keyin saytda chiqadi.</small>
+      </form>
+    </div>
+  </section>`;
+}
+function otzivYubor(m) {
+    const ism = $("#o-ism").value.trim();
+    const matn = $("#o-matn").value.trim();
+    if (!oynaBaho || !ism || !matn) {
+        $("#otziv-xato").hidden = false;
+        return;
+    }
+    const xabarMatni = [
+        `⭐ Yangi otziv — ${DOKON.nomi}`,
+        "",
+        `Tovar: ${m.nomi} (#${m.id})`,
+        `Baho: ${"★".repeat(oynaBaho)}${"☆".repeat(5 - oynaBaho)} (${oynaBaho}/5)`,
+        `Ism: ${ism}`,
+        "",
+        matn,
+    ].join("\n");
+    window.open(`https://t.me/${DOKON.telegram}?text=${encodeURIComponent(xabarMatni)}`, "_blank", "noopener");
+    oynaBaho = 0;
+    xabar("Rahmat! Telegram ochildi — xabarni yuboring");
+    tovarOynasiniChiz();
 }
 function oynadanSavatga() {
     const m = oynaTovar;
@@ -528,6 +603,22 @@ function hodisalar() {
             return sevimliAlmashtir(oynaTovar.id);
         if (t.closest("#btn-oyna-savat"))
             return oynadanSavatga();
+        const bh = t.closest("[data-baho]");
+        if (bh) {
+            oynaBaho = Number(bh.dataset.baho);
+            const ism = $("#o-ism").value;
+            const matn = $("#o-matn").value;
+            tovarOynasiniChiz();
+            $("#o-ism").value = ism;
+            $("#o-matn").value = matn;
+            $(`[data-baho="${oynaBaho}"]`).focus();
+        }
+    });
+    tOyna.addEventListener("submit", (e) => {
+        if (e.target.id !== "otziv-forma" || !oynaTovar)
+            return;
+        e.preventDefault();
+        otzivYubor(oynaTovar);
     });
     tOyna.addEventListener("close", () => katalogniChiz());
     // Savatcha
