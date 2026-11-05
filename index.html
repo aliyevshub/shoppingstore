@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aliyevs Store — kiyim do'koni</title>
+  <meta name="description" content="Aliyevs Store — Andijondagi zamonaviy kiyim do'koni. Erkaklar, ayollar va bolalar kiyimlari.">
+  <meta name="theme-color" content="#111111">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ===== YUQORI MENYU ===== -->
+  <header class="menyu">
+    <a href="#" class="logo" data-dokon-nomi>Aliyevs Store</a>
+    <nav class="havolalar">
+      <a href="#katalog-bolim">Katalog</a>
+      <a href="#biz-haqimizda">Biz haqimizda</a>
+      <a href="#aloqa">Aloqa</a>
+    </nav>
+    <button id="btn-savat" class="savat-tugma" aria-label="Savatcha">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+      <span id="savat-soni" class="hisob" hidden>0</span>
+    </button>
+  </header>
+
+  <!-- ===== BANNER ===== -->
+  <section class="banner">
+    <div class="banner-matn">
+      <p class="kichik">Yangi mavsum · 2026</p>
+      <h1>Uslubingizni<br>biz bilan toping</h1>
+      <p>Erkaklar, ayollar va bolalar uchun sifatli kiyimlar. Buyurtma — bir necha bosishda.</p>
+      <a href="#katalog-bolim" class="tugma oq">Katalogni ko'rish →</a>
+    </div>
+  </section>
+
+  <!-- ===== AFZALLIKLAR ===== -->
+  <section class="afzalliklar">
+    <div><strong>🚚 Yetkazib berish</strong><span>Andijon bo'ylab</span></div>
+    <div><strong>🔄 Almashtirish</strong><span>14 kun ichida</span></div>
+    <div><strong>✅ Sifat kafolati</strong><span>Har bir mahsulotga</span></div>
+  </section>
+
+  <!-- ===== KATALOG ===== -->
+  <main id="katalog-bolim" class="bolim">
+    <div class="bolim-bosh">
+      <h2>Katalog</h2>
+      <div class="boshqaruv">
+        <input id="qidiruv" type="search" placeholder="Qidirish…" aria-label="Qidirish">
+        <select id="saralash" aria-label="Saralash">
+          <option value="standart">Saralash</option>
+          <option value="arzon">Avval arzon</option>
+          <option value="qimmat">Avval qimmat</option>
+        </select>
+      </div>
+    </div>
+    <div class="turkumlar">
+      <button data-turkum="hammasi" class="faol">Hammasi</button>
+      <button data-turkum="erkaklar">Erkaklar</button>
+      <button data-turkum="ayollar">Ayollar</button>
+      <button data-turkum="bolalar">Bolalar</button>
+    </div>
+    <div id="katalog" class="katalog"></div>
+  </main>
+
+  <!-- ===== BIZ HAQIMIZDA ===== -->
+  <section id="biz-haqimizda" class="bolim haqida">
+    <h2>Biz haqimizda</h2>
+    <p><strong data-dokon-nomi>Aliyevs Store</strong> — zamonaviy va qulay kiyimlarni hamyonbop narxlarda taklif qiluvchi do'kon. Har bir mahsulotni sifatini tekshirib, siz uchun tanlaymiz.</p>
+  </section>
+
+  <!-- ===== ALOQA ===== -->
+  <footer id="aloqa" class="pastki">
+    <div>
+      <div class="logo" data-dokon-nomi>Aliyevs Store</div>
+      <p>© <span id="yil">2026</span> · Barcha huquqlar himoyalangan</p>
+    </div>
+    <div>
+      <h4>Aloqa</h4>
+      <p>📍 <span id="shahar">Andijon</span></p>
+      <p>🕘 <span id="ish-vaqti"></span></p>
+      <p>✈️ Telegram: <a id="tg-havola" target="_blank" rel="noopener"></a></p>
+    </div>
+  </footer>
+
+  <!-- ===== SAVATCHA (o'ngdan chiqadi) ===== -->
+  <div id="parda" class="parda"></div>
+  <aside class="savat" aria-label="Savatcha">
+    <div class="savat-bosh">
+      <h3>Savatcha</h3>
+      <button id="btn-savat-yop" class="yopish" aria-label="Yopish">✕</button>
+    </div>
+    <div id="savat-royxat" class="savat-royxat"></div>
+    <div class="savat-past">
+      <div class="jami"><span>Jami:</span><strong id="savat-jami">0 so'm</strong></div>
+      <button id="btn-buyurtma" class="tugma qora toliq">Buyurtma berish</button>
+    </div>
+  </aside>
+
+  <!-- ===== BUYURTMA OYNASI ===== -->
+  <dialog id="buyurtma-oyna" class="oyna">
+    <button id="btn-oyna-yop" class="yopish" aria-label="Yopish">✕</button>
+    <div id="oyna-forma">
+      <h3>Buyurtmani rasmiylashtirish</h3>
+      <p class="oyna-jami">Jami: <strong id="oyna-jami"></strong></p>
+      <form id="buyurtma-forma">
+        <label>Ismingiz<input name="ism" required autocomplete="name"></label>
+        <label>Telefon raqam<input name="tel" type="tel" required placeholder="+998 __ ___ __ __" autocomplete="tel"></label>
+        <label>Manzil<input name="manzil" required placeholder="Shahar, ko'cha, uy" autocomplete="street-address"></label>
+        <label>Izoh (ixtiyoriy)<textarea name="izoh" rows="2"></textarea></label>
+        <button class="tugma qora toliq" type="submit">Telegram orqali yuborish</button>
+      </form>
+    </div>
+    <div id="oyna-natija" hidden>
+      <h3>Buyurtma tayyor ✓</h3>
+      <p>Do'kon Telegram manzili hali sozlanmagan. Quyidagi matnni nusxalab, sotuvchiga yuboring:</p>
+      <textarea id="tayyor-matn" rows="10" readonly></textarea>
+      <button id="btn-nusxa" class="tugma qora toliq">Nusxalash</button>
+    </div>
+  </dialog>
+
+  <div id="xabar" class="xabar" role="status"></div>
+
+  <script src="dist/products.js"></script>
+  <script src="dist/app.js"></script>
+</body>
+</html>
