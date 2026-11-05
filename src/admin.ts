@@ -12,7 +12,8 @@
   type AdminTovar = Mahsulot & { yashirin: boolean };
   interface FormaVariant { rang: string; hex: string; rasmlar: string[] }
 
-  const PAROL_KALITI = "as-admin-parol";
+  const KALIT = "as-admin-kirish";
+  let login = "";
   let parol = "";
   let tovarlar: AdminTovar[] = [];
   let tahrirId: number | null = null;
@@ -43,7 +44,7 @@
   async function so_rov<T>(yol: string, sozlama: RequestInit = {}): Promise<T> {
     const javob = await fetch(yol, {
       ...sozlama,
-      headers: { authorization: "Bearer " + parol, ...(sozlama.headers || {}) },
+      headers: { authorization: "Bearer " + parol, "x-admin-login": encodeURIComponent(login), ...(sozlama.headers || {}) },
     });
     const malumot = await javob.json().catch(() => ({}));
     if (!javob.ok) {
@@ -56,11 +57,12 @@
   // ------------------------------------------------------------------
   // KIRISH / CHIQISH
   // ------------------------------------------------------------------
-  async function kirish(yangiParol: string): Promise<boolean> {
+  async function kirish(yangiLogin: string, yangiParol: string): Promise<boolean> {
+    login = yangiLogin.trim();
     parol = yangiParol;
     try {
       await so_rov("/api/admin/tekshir");
-      try { sessionStorage.setItem(PAROL_KALITI, parol); } catch { /* yopiq */ }
+      try { sessionStorage.setItem(KALIT, JSON.stringify({ login, parol })); } catch { /* yopiq */ }
       $("#kirish").hidden = true;
       $("#panel").hidden = false;
       await royxatniYukla();
@@ -74,8 +76,9 @@
   }
 
   function chiqish(): void {
+    login = "";
     parol = "";
-    try { sessionStorage.removeItem(PAROL_KALITI); } catch { /* yopiq */ }
+    try { sessionStorage.removeItem(KALIT); } catch { /* yopiq */ }
     $("#panel").hidden = true;
     $("#kirish").hidden = false;
     $<HTMLInputElement>("#parol").value = "";
@@ -292,7 +295,7 @@
     tugma.disabled = true;
     tugma.textContent = "Tekshirilmoqda…";
     $("#kirish-xato").hidden = true;
-    await kirish($<HTMLInputElement>("#parol").value);
+    await kirish($<HTMLInputElement>("#login").value, $<HTMLInputElement>("#parol").value);
     tugma.disabled = false;
     tugma.textContent = "Kirish";
   });
@@ -345,7 +348,11 @@
 
   // Avvalgi kirish (shu brauzer oynasida)
   try {
-    const saqlangan = sessionStorage.getItem(PAROL_KALITI);
-    if (saqlangan) kirish(saqlangan);
+    const saqlangan = sessionStorage.getItem(KALIT);
+    if (saqlangan) {
+      const k = JSON.parse(saqlangan) as { login: string; parol: string };
+      $<HTMLInputElement>("#login").value = k.login;
+      kirish(k.login, k.parol);
+    }
   } catch { /* yopiq */ }
 })();

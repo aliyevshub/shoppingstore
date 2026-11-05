@@ -40,16 +40,16 @@ Zamonaviy kiyim do'koni sayti: katalog, filtr, qidiruv, savatcha va Telegram orq
 ## Admin panel
 Manzil: `/admin` (masalan, `https://aliyevs-store.aliyevofficial0011.workers.dev/admin`)
 
-- Parol bilan kirish, tovar qo'shish, rasm yuklash, tahrirlash, yashirish va o'chirish
+- Login va parol bilan kirish, tovar qo'shish, rasm yuklash, tahrirlash, yashirish va o'chirish
 - Tovarlar va rasmlar **Cloudflare D1** ma'lumotlar bazasida saqlanadi (`worker/index.ts`)
 - Jadvallar birinchi so'rovda avtomatik yaratiladi
 
 ### Cloudflare sozlamalari
 1. **D1 baza:** `aliyevs-store-db` nomli baza yaratiladi va `wrangler.jsonc` ga `DB` nomi bilan ulanadi
-2. **Parol:** Workers & Pages → aliyevs-store → Settings → Variables and Secrets → `ADMIN_PAROL` (turi: Secret)
+2. **Login va parol:** Workers & Pages → aliyevs-store → Settings → Variables and Secrets → `ADMIN_LOGIN` va `ADMIN_PAROL` (turi: Secret)
 
 ### Kompyuterda sinash
 ```bash
 npx wrangler dev
 ```
-Parol uchun `.dev.vars` fayliga `ADMIN_PAROL="..."` yoziladi (bu fayl GitHub'ga yuklanmaydi).
+Login va parol uchun `.dev.vars` fayliga `ADMIN_LOGIN="..."` va `ADMIN_PAROL="..."` yoziladi (bu fayl GitHub'ga yuklanmaydi).

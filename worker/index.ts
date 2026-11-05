@@ -7,7 +7,7 @@
 //   Hamma uchun:
 //     GET    /api/tovarlar              — saytda ko'rinadigan yangi tovarlar
 //     GET    /api/rasm/:id              — yuklangan rasm
-//   Faqat admin (parol bilan):
+//   Faqat admin (login va parol bilan):
 //     GET    /api/admin/tekshir         — parol to'g'rimi?
 //     GET    /api/admin/tovarlar        — barcha tovarlar (yashirinlari ham)
 //     POST   /api/admin/tovarlar        — yangi tovar
@@ -21,6 +21,7 @@
 
 interface Env {
   DB?: any;              // D1 ma'lumotlar bazasi
+  ADMIN_LOGIN?: string;  // Cloudflare'da "Secret" sifatida saqlanadi
   ADMIN_PAROL?: string;  // Cloudflare'da "Secret" sifatida saqlanadi
   ASSETS: { fetch(req: Request): Promise<Response> };
 }
@@ -186,13 +187,20 @@ async function api(req: Request, env: Env, url: URL): Promise<Response> {
 
   // ---- Admin: parol tekshiruvi ----
   if (yol.startsWith("/api/admin/")) {
+    if (!env.ADMIN_LOGIN) return xato("Admin logini hali sozlanmagan (Cloudflare → Settings → Variables and Secrets → ADMIN_LOGIN)", 503);
     if (!env.ADMIN_PAROL) return xato("Admin paroli hali sozlanmagan (Cloudflare → Settings → Variables and Secrets → ADMIN_PAROL)", 503);
     if (!env.DB) return xato("Ma'lumotlar bazasi ulanmagan (D1)", 503);
     const sarlavha = req.headers.get("authorization") ?? "";
     const berilgan = sarlavha.startsWith("Bearer ") ? sarlavha.slice(7) : "";
-    if (!berilgan || !(await parolTogri(berilgan, env.ADMIN_PAROL))) {
+    let login = "";
+    try { login = decodeURIComponent(req.headers.get("x-admin-login") ?? ""); } catch { /* noto'g'ri */ }
+    const [loginTogri, parolTogriMi] = await Promise.all([
+      parolTogri(login.trim(), env.ADMIN_LOGIN.trim()),
+      parolTogri(berilgan, env.ADMIN_PAROL),
+    ]);
+    if (!login || !berilgan || !loginTogri || !parolTogriMi) {
       await new Promise((r) => setTimeout(r, 600)); // taxmin qilishni sekinlashtirish
-      return xato("Parol noto'g'ri", 401);
+      return xato("Login yoki parol noto'g'ri", 401);
     }
     await jadvallar(env.DB);
     const db = env.DB;

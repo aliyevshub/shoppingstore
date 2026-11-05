@@ -9,7 +9,8 @@
 // Barcha ma'lumotlar /api/admin/... orqali serverga yuboriladi.
 // =====================================================================
 (() => {
-    const PAROL_KALITI = "as-admin-parol";
+    const KALIT = "as-admin-kirish";
+    let login = "";
     let parol = "";
     let tovarlar = [];
     let tahrirId = null;
@@ -37,7 +38,7 @@
     async function so_rov(yol, sozlama = {}) {
         const javob = await fetch(yol, {
             ...sozlama,
-            headers: { authorization: "Bearer " + parol, ...(sozlama.headers || {}) },
+            headers: { authorization: "Bearer " + parol, "x-admin-login": encodeURIComponent(login), ...(sozlama.headers || {}) },
         });
         const malumot = await javob.json().catch(() => ({}));
         if (!javob.ok) {
@@ -50,12 +51,13 @@
     // ------------------------------------------------------------------
     // KIRISH / CHIQISH
     // ------------------------------------------------------------------
-    async function kirish(yangiParol) {
+    async function kirish(yangiLogin, yangiParol) {
+        login = yangiLogin.trim();
         parol = yangiParol;
         try {
             await so_rov("/api/admin/tekshir");
             try {
-                sessionStorage.setItem(PAROL_KALITI, parol);
+                sessionStorage.setItem(KALIT, JSON.stringify({ login, parol }));
             }
             catch { /* yopiq */ }
             $("#kirish").hidden = true;
@@ -71,9 +73,10 @@
         }
     }
     function chiqish() {
+        login = "";
         parol = "";
         try {
-            sessionStorage.removeItem(PAROL_KALITI);
+            sessionStorage.removeItem(KALIT);
         }
         catch { /* yopiq */ }
         $("#panel").hidden = true;
@@ -289,7 +292,7 @@
         tugma.disabled = true;
         tugma.textContent = "Tekshirilmoqda…";
         $("#kirish-xato").hidden = true;
-        await kirish($("#parol").value);
+        await kirish($("#login").value, $("#parol").value);
         tugma.disabled = false;
         tugma.textContent = "Kirish";
     });
@@ -343,9 +346,12 @@
     });
     // Avvalgi kirish (shu brauzer oynasida)
     try {
-        const saqlangan = sessionStorage.getItem(PAROL_KALITI);
-        if (saqlangan)
-            kirish(saqlangan);
+        const saqlangan = sessionStorage.getItem(KALIT);
+        if (saqlangan) {
+            const k = JSON.parse(saqlangan);
+            $("#login").value = k.login;
+            kirish(k.login, k.parol);
+        }
     }
     catch { /* yopiq */ }
 })();
