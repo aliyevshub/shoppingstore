@@ -24,8 +24,8 @@ interface Variant {
   rasmlar: string[]; // img/ papkasidagi fayllar (birinchisi asosiy)
 }
 
-// Haqiqiy xaridorlar otzivi (Telegram orqali kelganlarini shu yerga qo'shing)
-interface Otziv {
+// Haqiqiy xaridorlar izohlari (Telegram orqali kelganlarini shu yerga qo'shing)
+interface Izoh {
   ism: string;
   baho: 1 | 2 | 3 | 4 | 5;
   matn: string;
@@ -42,7 +42,7 @@ interface Mahsulot {
   eskiNarx?: number;  // chegirma bo'lsa
   yangi?: boolean;
   variantlar: Variant[];
-  otzivlar?: Otziv[];
+  izohlar?: Izoh[];
 }
 
 const TURKUM_NOMLARI: Record<Turkum, string> = { sport: "Sport", casual: "Casual" };

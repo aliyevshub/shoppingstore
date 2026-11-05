@@ -312,69 +312,69 @@ function tovarOynasiniChiz() {
         <li>To'lov qabul qilinganda: naqd yoki karta</li>
       </ul>
     </div>
-    ${otzivlarHTML(m)}`;
+    ${izohlarHTML(m)}`;
 }
 // ---------------------------------------------------------------------
-// OTZIVLAR
+// IZOHLAR
 // ---------------------------------------------------------------------
 let oynaBaho = 0;
 function yulduzlar(baho) {
     return `<span class="yulduzlar" aria-label="${baho} / 5">${[1, 2, 3, 4, 5].map((i) => `<i class="${i <= baho ? "tola" : ""}">★</i>`).join("")}</span>`;
 }
-function otzivlarHTML(m) {
-    const r = m.otzivlar ?? [];
+function izohlarHTML(m) {
+    const r = m.izohlar ?? [];
     const ortacha = r.length ? r.reduce((j, o) => j + o.baho, 0) / r.length : 0;
     const royxat = r.length
         ? r
             .map((o) => `
-        <article class="otziv">
-          <div class="otziv-bosh">
-            <span class="otziv-avatar">${xavfsiz(o.ism.charAt(0).toUpperCase())}</span>
+        <article class="izoh">
+          <div class="izoh-bosh">
+            <span class="izoh-avatar">${xavfsiz(o.ism.charAt(0).toUpperCase())}</span>
             <div><strong>${xavfsiz(o.ism)}</strong><time>${xavfsiz(o.sana)}</time></div>
             ${yulduzlar(o.baho)}
           </div>
           <p>${xavfsiz(o.matn)}</p>
         </article>`)
             .join("")
-        : `<div class="otziv-bosh-holat">
-        <span class="otziv-belgi" aria-hidden="true">✦</span>
-        <strong>Hali otziv yo'q</strong>
-        <span>Bu tovarni sotib olgan bo'lsangiz, birinchi bo'lib fikringizni qoldiring.</span>
+        : `<div class="izoh-bosh-holat">
+        <span class="izoh-belgi" aria-hidden="true">✦</span>
+        <strong>Hali izoh yo'q</strong>
+        <span>Bu mahsulotni xarid qilgan bo'lsangiz, birinchi bo'lib izoh qoldiring.</span>
       </div>`;
     return `
-  <section class="t-otzivlar" aria-labelledby="otziv-sarlavha">
-    <div class="otziv-ustki">
-      <h3 id="otziv-sarlavha">Otzivlar <span>${r.length}</span></h3>
-      ${r.length ? `<div class="otziv-ortacha">${yulduzlar(Math.round(ortacha))}<b>${ortacha.toFixed(1)}</b></div>` : ""}
+  <section class="t-izohlar" aria-labelledby="izoh-sarlavha">
+    <div class="izoh-ustki">
+      <h3 id="izoh-sarlavha">Izohlar <span>${r.length}</span></h3>
+      ${r.length ? `<div class="izoh-ortacha">${yulduzlar(Math.round(ortacha))}<b>${ortacha.toFixed(1)}</b></div>` : ""}
     </div>
-    <div class="otziv-ichi">
-      <div class="otziv-royxat">${royxat}</div>
-      <form class="otziv-forma" id="otziv-forma" novalidate>
-        <h4>Fikringizni qoldiring</h4>
+    <div class="izoh-ichi">
+      <div class="izoh-royxat">${royxat}</div>
+      <form class="izoh-forma" id="izoh-forma" novalidate>
+        <h4>Izoh qoldiring</h4>
         <div class="baho-tanlash" role="radiogroup" aria-label="Baho">
           ${[1, 2, 3, 4, 5]
         .map((i) => `<button type="button" class="baho${i <= oynaBaho ? " faol" : ""}" data-baho="${i}" role="radio" aria-checked="${i === oynaBaho}" aria-label="${i} yulduz">★</button>`)
         .join("")}
-          <span class="baho-matn">${oynaBaho ? ["", "Yomon", "O'rtacha emas", "Yaxshi", "Juda yaxshi", "A'lo!"][oynaBaho] : "Baho bering"}</span>
+          <span class="baho-matn">${oynaBaho ? ["", "Yomon", "Qoniqarsiz", "O'rtacha", "Yaxshi", "A'lo"][oynaBaho] : "Baho bering"}</span>
         </div>
         <label>Ismingiz<input id="o-ism" name="ism" autocomplete="given-name" required placeholder="Ismingizni yozing"></label>
-        <label>Fikringiz<textarea id="o-matn" name="matn" rows="3" required placeholder="Fikringizni yozing"></textarea></label>
-        <span class="t-xato" id="otziv-xato" hidden>Baho, ism va fikrni to'ldiring</span>
+        <label>Izohingiz<textarea id="o-matn" name="matn" rows="3" required placeholder="Izohingizni yozing"></textarea></label>
+        <span class="t-xato" id="izoh-xato" hidden>Baho, ism va izohni to'ldiring</span>
         <button class="tugma asosiy glow toliq" type="submit">Telegram orqali yuborish</button>
-        <small class="otziv-izoh">Otzivlar tekshirilgandan keyin saytda chiqadi.</small>
+        <small class="izoh-izoh">Izohlar tekshirilgandan so'ng saytda e'lon qilinadi.</small>
       </form>
     </div>
   </section>`;
 }
-function otzivYubor(m) {
+function izohYubor(m) {
     const ism = $("#o-ism").value.trim();
     const matn = $("#o-matn").value.trim();
     if (!oynaBaho || !ism || !matn) {
-        $("#otziv-xato").hidden = false;
+        $("#izoh-xato").hidden = false;
         return;
     }
     const xabarMatni = [
-        `⭐ Yangi otziv — ${DOKON.nomi}`,
+        `⭐ Yangi izoh — ${DOKON.nomi}`,
         "",
         `Tovar: ${m.nomi} (#${m.id})`,
         `Baho: ${"★".repeat(oynaBaho)}${"☆".repeat(5 - oynaBaho)} (${oynaBaho}/5)`,
@@ -615,10 +615,10 @@ function hodisalar() {
         }
     });
     tOyna.addEventListener("submit", (e) => {
-        if (e.target.id !== "otziv-forma" || !oynaTovar)
+        if (e.target.id !== "izoh-forma" || !oynaTovar)
             return;
         e.preventDefault();
-        otzivYubor(oynaTovar);
+        izohYubor(oynaTovar);
     });
     tOyna.addEventListener("close", () => katalogniChiz());
     // Savatcha
