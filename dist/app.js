@@ -2,158 +2,351 @@
 // =====================================================================
 // app.ts — DO'KON DASTURI
 // ---------------------------------------------------------------------
-// 1) Katalogni chizadi (filtr, qidiruv, saralash)
-// 2) Savatcha: qo'shish, sonini o'zgartirish, o'chirish (xotirada saqlanadi)
-// 3) Buyurtma: ma'lumotlarni yig'ib, Telegram'ga yuboradi
+// 1) Katalog: turkumlar, qidiruv, saralash, sevimlilar
+// 2) Tovar kartasi: rasmlar galereyasi (surish), rang tanlash
+// 3) Tovar oynasi: katta galereya, rang, o'lcham, soni
+// 4) Savatcha va Telegram orqali buyurtma
 // =====================================================================
 // ---------------------------------------------------------------------
 // YORDAMCHI FUNKSIYALAR
 // ---------------------------------------------------------------------
-function $(selektor) {
-    const e = document.querySelector(selektor);
+function $(selektor, ota = document) {
+    const e = ota.querySelector(selektor);
     if (!e)
         throw new Error("Element topilmadi: " + selektor);
     return e;
 }
-// 149000 → "149 000 so'm"
 function narxMatn(son) {
     return son.toLocaleString("ru-RU").replace(/ /g, " ") + " so'm";
 }
-// HTML ichiga xavfsiz matn qo'yish
 function xavfsiz(matn) {
     return matn.replace(/[&<>"']/g, (b) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[b]));
 }
-// ---------------------------------------------------------------------
-// KIYIM RASMLARI (SVG) — rasm fayllarisiz, kod bilan chiziladi
-// ---------------------------------------------------------------------
-const SHAKLLAR = {
-    futbolka: `<path d="M62 42 L86 30 Q100 46 114 30 L138 42 L170 72 L150 94 L138 82 L138 172 L62 172 L62 82 L50 94 L30 72 Z"/>`,
-    hudi: `<path d="M66 52 L86 40 L114 40 L134 52 L166 142 L148 148 L134 102 L134 172 L66 172 L66 102 L52 148 L34 142 Z"/>
-     <path class="soya" d="M80 44 Q100 6 120 44 Q100 60 80 44 Z"/>
-     <path class="soya" d="M78 128 L122 128 L118 152 L82 152 Z"/>`,
-    kurtka: `<path d="M66 50 L88 36 L112 36 L134 50 L166 146 L148 152 L134 104 L134 174 L66 174 L66 104 L52 152 L34 146 Z"/>
-     <path class="soya" d="M88 36 L100 58 L112 36 L118 44 L100 70 L82 44 Z"/>
-     <line x1="100" y1="64" x2="100" y2="174" class="chiziq"/>
-     <rect class="soya" x="72" y="124" width="18" height="4" rx="2"/>
-     <rect class="soya" x="110" y="124" width="18" height="4" rx="2"/>`,
-    shim: `<path d="M66 28 L134 28 L142 174 L108 174 L100 78 L92 174 L58 174 Z"/>
-     <rect class="soya" x="66" y="28" width="68" height="10"/>`,
-    koylak: `<path d="M84 26 L90 26 L92 50 L108 50 L110 26 L116 26 L120 62 Q150 120 156 174 L44 174 Q50 120 80 62 Z"/>
-     <path class="soya" d="M80 62 L120 62 L118 72 L82 72 Z"/>`,
-    kofta: `<path d="M66 48 L86 38 Q100 50 114 38 L134 48 L166 140 L148 146 L134 100 L134 170 L66 170 L66 100 L52 146 L34 140 Z"/>
-     <rect class="soya" x="66" y="160" width="68" height="10"/>`,
-    krossovka: `<path d="M28 126 Q30 92 58 96 L96 80 Q112 102 142 106 Q172 110 174 132 L174 138 L28 138 Z"/>
-     <rect class="taglik" x="26" y="136" width="150" height="14" rx="6"/>
-     <path class="chiziq" d="M70 98 L84 112 M80 92 L94 106 M90 86 L104 100" fill="none"/>`,
-    kepka: `<path d="M52 118 Q56 62 100 62 Q144 62 148 118 Z"/>
-     <path class="soya" d="M104 112 L178 112 Q176 126 146 128 L104 124 Z"/>
-     <circle class="soya" cx="100" cy="64" r="5"/>`,
-};
-function kiyimRasmi(m) {
-    return `<svg viewBox="0 0 200 200" class="kiyim-svg" style="--rang:${m.rang}" aria-hidden="true">
-    <g class="kiyim">${SHAKLLAR[m.shakl]}</g>
-  </svg>`;
-}
-const SAVAT_KALITI = "aliyevs-store-savat";
-let savat = savatniYukla();
-let tanlanganTurkum = "hammasi";
-let qidiruv = "";
-let saralash = "standart";
-function savatniYukla() {
+function xotiradanOl(kalit, standart) {
     try {
-        const matn = localStorage.getItem(SAVAT_KALITI);
-        return matn ? JSON.parse(matn) : [];
+        const m = localStorage.getItem(kalit);
+        return m ? JSON.parse(m) : standart;
     }
     catch {
-        return [];
+        return standart;
     }
 }
-function savatniSaqla() {
+function xotiragaYoz(kalit, qiymat) {
     try {
-        localStorage.setItem(SAVAT_KALITI, JSON.stringify(savat));
+        localStorage.setItem(kalit, JSON.stringify(qiymat));
     }
     catch {
         /* xotira yopiq bo'lsa ham sayt ishlayveradi */
     }
 }
+const IKON = {
+    yurak: `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>`,
+    chap: `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="m14.5 6-6 6 6 6"/></svg>`,
+    ong: `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="m9.5 6 6 6-6 6"/></svg>`,
+};
+let savat = xotiradanOl("as-savat-v2", []);
+let sevimlilar = new Set(xotiradanOl("as-sevimli", []));
+let filtr = "hammasi";
+let qidiruv = "";
+let saralash = "standart";
+const kartaVariant = new Map(); // kartada tanlangan rang
 function mahsulotTop(id) {
     return mahsulotlar.find((m) => m.id === id);
 }
+function savatniSaqla() {
+    xotiragaYoz("as-savat-v2", savat);
+}
+function sevimlilarniSaqla() {
+    xotiragaYoz("as-sevimli", [...sevimlilar]);
+}
 function savatJami() {
-    return savat.reduce((jami, q) => jami + (mahsulotTop(q.id)?.narx ?? 0) * q.soni, 0);
+    return savat.reduce((j, q) => j + (mahsulotTop(q.id)?.narx ?? 0) * q.soni, 0);
 }
 function savatSoni() {
-    return savat.reduce((jami, q) => jami + q.soni, 0);
+    return savat.reduce((j, q) => j + q.soni, 0);
+}
+// ---------------------------------------------------------------------
+// GALEREYA (karta va oyna uchun umumiy)
+// ---------------------------------------------------------------------
+function galereyaHTML(rasmlar, nomi, katta = false) {
+    const rasmlarHTML = rasmlar
+        .map((r, i) => `<img src="${r}" alt="${xavfsiz(nomi)} — ${i + 1}-rasm" ${i === 0 && katta ? "" : 'loading="lazy"'} decoding="async" draggable="false">`)
+        .join("");
+    const kop = rasmlar.length > 1;
+    return `
+    <div class="galereya" data-galereya tabindex="0" aria-label="${xavfsiz(nomi)} rasmlari">${rasmlarHTML}</div>
+    ${kop
+        ? `<button class="gal-strelka chap glow" data-gal-chap aria-label="Oldingi rasm">${IKON.chap}</button>
+           <button class="gal-strelka ong glow" data-gal-ong aria-label="Keyingi rasm">${IKON.ong}</button>
+           <div class="nuqtalar" aria-hidden="true">${rasmlar.map((_, i) => `<span${i === 0 ? ' class="faol"' : ""}></span>`).join("")}</div>`
+        : ""}`;
+}
+function galereyaIndeksi(gal) {
+    return Math.round(gal.scrollLeft / Math.max(1, gal.clientWidth));
+}
+function galereyagaOt(gal, i) {
+    const soni = gal.children.length;
+    const yangi = (i + soni) % soni;
+    gal.scrollTo({ left: yangi * gal.clientWidth, behavior: "smooth" });
+}
+function nuqtalarniYangila(gal) {
+    const ota = gal.parentElement;
+    if (!ota)
+        return;
+    const i = galereyaIndeksi(gal);
+    ota.querySelectorAll(".nuqtalar span").forEach((s, k) => s.classList.toggle("faol", k === i));
+    ota.querySelectorAll("[data-thumb]").forEach((t, k) => t.classList.toggle("faol", k === i));
+}
+// Galereya hodisalari — hujjat darajasida bir marta ulanadi
+function galereyaHodisalari() {
+    document.addEventListener("scroll", (e) => {
+        const t = e.target;
+        if (t instanceof HTMLElement && t.matches("[data-galereya]"))
+            nuqtalarniYangila(t);
+    }, true);
+    document.addEventListener("click", (e) => {
+        const b = e.target.closest("[data-gal-chap],[data-gal-ong]");
+        if (!b)
+            return;
+        e.stopPropagation();
+        const gal = b.parentElement?.querySelector("[data-galereya]");
+        if (!gal)
+            return;
+        galereyagaOt(gal, galereyaIndeksi(gal) + (b.hasAttribute("data-gal-ong") ? 1 : -1));
+    });
+    document.addEventListener("keydown", (e) => {
+        const gal = e.target;
+        if (!(gal instanceof HTMLElement) || !gal.matches("[data-galereya]"))
+            return;
+        if (e.key === "ArrowRight")
+            galereyagaOt(gal, galereyaIndeksi(gal) + 1);
+        if (e.key === "ArrowLeft")
+            galereyagaOt(gal, galereyaIndeksi(gal) - 1);
+    });
 }
 // ---------------------------------------------------------------------
 // KATALOG
 // ---------------------------------------------------------------------
-function korinadiganMahsulotlar() {
+function korinadiganlar() {
     const q = qidiruv.trim().toLowerCase();
-    const natija = mahsulotlar.filter((m) => (tanlanganTurkum === "hammasi" || m.turkum === tanlanganTurkum) &&
-        (q === "" || m.nomi.toLowerCase().includes(q)));
+    const natija = mahsulotlar.filter((m) => {
+        if (filtr === "sevimli" && !sevimlilar.has(m.id))
+            return false;
+        if ((filtr === "sport" || filtr === "boshqa") && m.turkum !== filtr)
+            return false;
+        if (q && !(m.nomi + " " + m.tavsif + " " + m.variantlar.map((x) => x.rang).join(" ")).toLowerCase().includes(q))
+            return false;
+        return true;
+    });
     if (saralash === "arzon")
         natija.sort((a, b) => a.narx - b.narx);
     if (saralash === "qimmat")
         natija.sort((a, b) => b.narx - a.narx);
+    if (saralash === "yangi")
+        natija.sort((a, b) => Number(!!b.yangi) - Number(!!a.yangi));
     return natija;
 }
+function belgilarHTML(m) {
+    const chegirma = m.eskiNarx ? Math.round((1 - m.narx / m.eskiNarx) * 100) : 0;
+    return `<div class="belgilar">
+      ${m.yangi ? `<span class="belgi">Yangi</span>` : ""}
+      ${chegirma ? `<span class="belgi chegirma">−${chegirma}%</span>` : ""}
+    </div>`;
+}
+function narxHTML(m) {
+    return `<div class="narx"><span>${narxMatn(m.narx)}</span>${m.eskiNarx ? `<s>${narxMatn(m.eskiNarx)}</s>` : ""}</div>`;
+}
+function rangDoiralari(m, tanlangan, atribut) {
+    if (m.variantlar.length < 2)
+        return `<div class="ranglar"><span class="rang-nomi">${xavfsiz(m.variantlar[0].rang)}</span></div>`;
+    return `<div class="ranglar" role="radiogroup" aria-label="Rang">
+    ${m.variantlar
+        .map((vr, i) => `<button class="rang${i === tanlangan ? " faol" : ""}" ${atribut}="${i}" role="radio" aria-checked="${i === tanlangan}" aria-label="${xavfsiz(vr.rang)}" title="${xavfsiz(vr.rang)}" style="--r:${vr.hex}"></button>`)
+        .join("")}
+  </div>`;
+}
+function kartaHTML(m) {
+    const vi = kartaVariant.get(m.id) ?? 0;
+    const vr = m.variantlar[vi];
+    const sevimli = sevimlilar.has(m.id);
+    return `
+  <article class="karta" data-id="${m.id}">
+    <div class="karta-media" data-ochish>
+      ${galereyaHTML(vr.rasmlar, m.nomi)}
+      ${belgilarHTML(m)}
+      <button class="sevimli-tugma glow${sevimli ? " faol" : ""}" data-sevimli="${m.id}" aria-pressed="${sevimli}" aria-label="Sevimlilarga qo'shish">${IKON.yurak}</button>
+    </div>
+    <div class="karta-info">
+      <span class="karta-turkum">${TURKUM_NOMLARI[m.turkum]} · ${m.tur === "poyabzal" ? "Poyabzal" : "Kiyim"}</span>
+      <h3 data-ochish>${xavfsiz(m.nomi)}</h3>
+      ${narxHTML(m)}
+      ${rangDoiralari(m, vi, "data-karta-rang")}
+      <button class="tugma glow karta-tugma" data-ochish>Tanlash</button>
+    </div>
+  </article>`;
+}
 function katalogniChiz() {
-    const royxat = korinadiganMahsulotlar();
+    const royxat = korinadiganlar();
     const joy = $("#katalog");
+    $("#natija-soni").textContent = `${royxat.length} ta tovar`;
     if (royxat.length === 0) {
-        joy.innerHTML = `<p class="bosh">Hech narsa topilmadi. Boshqa so'z bilan qidirib ko'ring.</p>`;
+        joy.innerHTML =
+            filtr === "sevimli"
+                ? `<div class="bosh"><strong>Sevimlilar hali bo'sh</strong><span>Tovar rasmidagi ♡ belgisini bosing, u shu yerda saqlanadi.</span></div>`
+                : `<div class="bosh"><strong>Hech narsa topilmadi</strong><span>Boshqa so'z bilan qidirib ko'ring yoki turkumni almashtiring.</span></div>`;
         return;
     }
-    joy.innerHTML = royxat
-        .map((m) => {
-        const chegirma = m.eskiNarx ? Math.round((1 - m.narx / m.eskiNarx) * 100) : 0;
-        return `
-      <article class="karta">
-        <div class="karta-rasm">
-          ${kiyimRasmi(m)}
-          ${m.yangi ? `<span class="belgi">Yangi</span>` : ""}
-          ${chegirma ? `<span class="belgi chegirma">−${chegirma}%</span>` : ""}
+    joy.innerHTML = royxat.map(kartaHTML).join("");
+}
+function sanoqlarniYangila() {
+    const s = (f) => f === "hammasi" ? mahsulotlar.length : f === "sevimli" ? sevimlilar.size : mahsulotlar.filter((m) => m.turkum === f).length;
+    document.querySelectorAll("[data-sanoq]").forEach((e) => (e.textContent = String(s(e.dataset.sanoq))));
+    const hs = $("#sevimli-soni");
+    hs.textContent = String(sevimlilar.size);
+    hs.hidden = sevimlilar.size === 0;
+}
+function filtrniTanla(f) {
+    filtr = f;
+    document.querySelectorAll("[data-filtr]").forEach((b) => {
+        const faol = b.dataset.filtr === f;
+        b.classList.toggle("faol", faol);
+        b.setAttribute("aria-selected", String(faol));
+    });
+    katalogniChiz();
+}
+function katalogga() {
+    $("#katalog-bolim").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function sevimliAlmashtir(id) {
+    if (sevimlilar.has(id)) {
+        sevimlilar.delete(id);
+        xabar("Sevimlilardan olib tashlandi");
+    }
+    else {
+        sevimlilar.add(id);
+        xabar("Sevimlilarga qo'shildi ♥");
+    }
+    sevimlilarniSaqla();
+    sanoqlarniYangila();
+    document.querySelectorAll(`[data-sevimli="${id}"]`).forEach((b) => {
+        b.classList.toggle("faol", sevimlilar.has(id));
+        b.setAttribute("aria-pressed", String(sevimlilar.has(id)));
+    });
+    if (filtr === "sevimli")
+        katalogniChiz();
+}
+// ---------------------------------------------------------------------
+// TOVAR OYNASI
+// ---------------------------------------------------------------------
+let oynaTovar = null;
+let oynaVariant = 0;
+let oynaOlcham = "";
+let oynaSoni = 1;
+function tovarOynasiniOch(id) {
+    const m = mahsulotTop(id);
+    if (!m)
+        return;
+    oynaTovar = m;
+    oynaVariant = kartaVariant.get(id) ?? 0;
+    oynaOlcham = "";
+    oynaSoni = 1;
+    tovarOynasiniChiz();
+    const d = $("#tovar-oyna");
+    if (!d.open)
+        d.showModal();
+    $("[data-galereya]", d).focus({ preventScroll: true });
+}
+function tovarOynasiniChiz() {
+    const m = oynaTovar;
+    if (!m)
+        return;
+    const vr = m.variantlar[oynaVariant];
+    const sevimli = sevimlilar.has(m.id);
+    $("#tovar-oyna-ichi").innerHTML = `
+    <div class="t-media">
+      <div class="t-galereya">
+        ${galereyaHTML(vr.rasmlar, m.nomi, true)}
+        ${belgilarHTML(m)}
+      </div>
+      ${vr.rasmlar.length > 1
+        ? `<div class="t-thumbs">${vr.rasmlar
+            .map((r, i) => `<button class="thumb glow${i === 0 ? " faol" : ""}" data-thumb="${i}" aria-label="${i + 1}-rasm"><img src="${r}" alt="" loading="lazy"></button>`)
+            .join("")}</div>`
+        : ""}
+    </div>
+    <div class="t-info">
+      <span class="karta-turkum">${TURKUM_NOMLARI[m.turkum]} · ${m.tur === "poyabzal" ? "Poyabzal" : "Kiyim"}</span>
+      <h2 id="tovar-sarlavha">${xavfsiz(m.nomi)}</h2>
+      ${narxHTML(m)}
+      <p class="t-tavsif">${xavfsiz(m.tavsif)}</p>
+
+      <div class="t-qator">
+        <span class="t-yorliq">Rang: <b>${xavfsiz(vr.rang)}</b></span>
+        ${m.variantlar.length > 1 ? rangDoiralari(m, oynaVariant, "data-oyna-rang") : ""}
+      </div>
+
+      <div class="t-qator">
+        <span class="t-yorliq">O'lcham${oynaOlcham ? `: <b>${oynaOlcham}</b>` : ""}</span>
+        <div class="olchamlar" role="radiogroup" aria-label="O'lcham">
+          ${olchamlar(m)
+        .map((o) => `<button class="olcham glow${o === oynaOlcham ? " faol" : ""}" data-olcham="${o}" role="radio" aria-checked="${o === oynaOlcham}">${o}</button>`)
+        .join("")}
         </div>
-        <div class="karta-matn">
-          <span class="turkum">${TURKUM_NOMLARI[m.turkum]}</span>
-          <h3>${xavfsiz(m.nomi)}</h3>
-          <div class="narx">
-            ${narxMatn(m.narx)}
-            ${m.eskiNarx ? `<s>${narxMatn(m.eskiNarx)}</s>` : ""}
-          </div>
-          <div class="olchamlar" role="radiogroup" aria-label="O'lcham">
-            ${m.olchamlar
-            .map((o, i) => `<label><input type="radio" name="o-${m.id}" value="${o}" ${i === 0 ? "checked" : ""}><span>${o}</span></label>`)
-            .join("")}
-          </div>
-          <button class="tugma qora" data-qosh="${m.id}">Savatga qo'shish</button>
+        <span class="t-xato" id="olcham-xato" hidden>Avval o'lchamni tanlang</span>
+      </div>
+
+      <div class="t-amallar">
+        <div class="soni" aria-label="Soni">
+          <button class="glow" data-oyna-soni="-1" aria-label="Kamaytirish">−</button>
+          <span>${oynaSoni}</span>
+          <button class="glow" data-oyna-soni="1" aria-label="Ko'paytirish">+</button>
         </div>
-      </article>`;
-    })
-        .join("");
+        <button class="tugma asosiy glow" id="btn-oyna-savat">Savatga qo'shish</button>
+        <button class="sevimli-tugma katta glow${sevimli ? " faol" : ""}" data-sevimli="${m.id}" aria-pressed="${sevimli}" aria-label="Sevimlilarga qo'shish">${IKON.yurak}</button>
+      </div>
+
+      <ul class="t-afzallik">
+        <li>Andijon bo'ylab yetkazib berish — 1 kun</li>
+        <li>14 kun ichida almashtirish</li>
+        <li>To'lov qabul qilinganda: naqd yoki karta</li>
+      </ul>
+    </div>`;
+}
+function oynadanSavatga() {
+    const m = oynaTovar;
+    if (!m)
+        return;
+    if (!oynaOlcham) {
+        $("#olcham-xato").hidden = false;
+        $(".olchamlar", $("#tovar-oyna")).classList.add("silkinish");
+        window.setTimeout(() => document.querySelector(".olchamlar.silkinish")?.classList.remove("silkinish"), 500);
+        return;
+    }
+    const bor = savat.find((q) => q.id === m.id && q.variant === oynaVariant && q.olcham === oynaOlcham);
+    if (bor)
+        bor.soni += oynaSoni;
+    else
+        savat.push({ id: m.id, variant: oynaVariant, olcham: oynaOlcham, soni: oynaSoni });
+    savatniSaqla();
+    savatniChiz();
+    $("#tovar-oyna").close();
+    xabar("Savatga qo'shildi ✓");
+    const s = $("#btn-savat");
+    s.classList.remove("urildi");
+    void s.offsetWidth;
+    s.classList.add("urildi");
 }
 // ---------------------------------------------------------------------
 // SAVATCHA
 // ---------------------------------------------------------------------
-function savatgaQosh(id, olcham) {
-    const bor = savat.find((q) => q.id === id && q.olcham === olcham);
-    if (bor)
-        bor.soni++;
-    else
-        savat.push({ id, olcham, soni: 1 });
-    savatniSaqla();
-    savatniChiz();
-    xabar("Savatga qo'shildi ✓");
-}
 function savatniChiz() {
     const soni = savatSoni();
-    const hisoblagich = $("#savat-soni");
-    hisoblagich.textContent = String(soni);
-    hisoblagich.hidden = soni === 0;
+    const h = $("#savat-soni");
+    h.textContent = String(soni);
+    h.hidden = soni === 0;
     const joy = $("#savat-royxat");
     if (savat.length === 0) {
-        joy.innerHTML = `<p class="bosh">Savatcha bo'sh</p>`;
+        joy.innerHTML = `<div class="bosh"><strong>Savatcha bo'sh</strong><span>Katalogdan yoqqan tovarni tanlang.</span></div>`;
     }
     else {
         joy.innerHTML = savat
@@ -161,18 +354,19 @@ function savatniChiz() {
             const m = mahsulotTop(q.id);
             if (!m)
                 return "";
+            const vr = m.variantlar[q.variant] ?? m.variantlar[0];
             return `
         <div class="savat-qator">
-          <div class="savat-rasm">${kiyimRasmi(m)}</div>
+          <img src="${vr.rasmlar[0]}" alt="" loading="lazy">
           <div class="savat-info">
             <strong>${xavfsiz(m.nomi)}</strong>
-            <span>O'lcham: ${q.olcham}</span>
-            <span>${narxMatn(m.narx)}</span>
+            <span>${xavfsiz(vr.rang)} · ${q.olcham}</span>
+            <span class="savat-narx">${narxMatn(m.narx * q.soni)}</span>
           </div>
-          <div class="soni">
-            <button data-kamay="${i}" aria-label="Kamaytirish">−</button>
+          <div class="soni kichik">
+            <button class="glow" data-kamay="${i}" aria-label="Kamaytirish">−</button>
             <span>${q.soni}</span>
-            <button data-kopay="${i}" aria-label="Ko'paytirish">+</button>
+            <button class="glow" data-kopay="${i}" aria-label="Ko'paytirish">+</button>
           </div>
           <button class="olib-tashla" data-ochir="${i}" aria-label="O'chirish">✕</button>
         </div>`;
@@ -184,62 +378,59 @@ function savatniChiz() {
 }
 function savatniOch(ochiq) {
     document.body.classList.toggle("savat-ochiq", ochiq);
+    $(".savat").setAttribute("aria-hidden", String(!ochiq));
+    if (ochiq)
+        $("#btn-savat-yop").focus();
 }
 // ---------------------------------------------------------------------
 // BUYURTMA
 // ---------------------------------------------------------------------
 function buyurtmaMatni(ism, tel, manzil, izoh) {
-    const qatorlar = savat.map((q, i) => {
-        const m = mahsulotTop(q.id);
-        return `${i + 1}. ${m.nomi} (${q.olcham}) × ${q.soni} = ${narxMatn(m.narx * q.soni)}`;
+    const q = savat.map((s, i) => {
+        const m = mahsulotTop(s.id);
+        const vr = m.variantlar[s.variant] ?? m.variantlar[0];
+        return `${i + 1}. ${m.nomi} — ${vr.rang}, ${s.olcham} × ${s.soni} = ${narxMatn(m.narx * s.soni)}`;
     });
     return [
         `🛍 Yangi buyurtma — ${DOKON.nomi}`,
-        ``,
-        ...qatorlar,
-        ``,
+        "",
+        ...q,
+        "",
         `💰 Jami: ${narxMatn(savatJami())}`,
-        ``,
+        "",
         `👤 Ism: ${ism}`,
         `📞 Telefon: ${tel}`,
         `📍 Manzil: ${manzil}`,
-        izoh ? `📝 Izoh: ${izoh}` : "",
-    ]
-        .filter((q, i, arr) => !(q === "" && arr[i - 1] === ""))
-        .join("\n")
-        .trim();
+        ...(izoh ? [`📝 Izoh: ${izoh}`] : []),
+    ].join("\n");
 }
 function buyurtmaYubor(e) {
     e.preventDefault();
-    const forma = e.target;
-    const d = new FormData(forma);
-    const matn = buyurtmaMatni(String(d.get("ism") ?? "").trim(), String(d.get("tel") ?? "").trim(), String(d.get("manzil") ?? "").trim(), String(d.get("izoh") ?? "").trim());
+    const d = new FormData(e.target);
+    const ol = (k) => String(d.get(k) ?? "").trim();
+    const matn = buyurtmaMatni(ol("ism"), ol("tel"), ol("manzil"), ol("izoh"));
     if (DOKON.telegram) {
-        window.open(`https://t.me/${DOKON.telegram}?text=${encodeURIComponent(matn)}`, "_blank");
+        window.open(`https://t.me/${DOKON.telegram}?text=${encodeURIComponent(matn)}`, "_blank", "noopener");
         xabar("Telegram ochildi — xabarni yuboring");
     }
     else {
-        // Telegram sozlanmagan — matnni ko'rsatamiz
         $("#tayyor-matn").value = matn;
         $("#oyna-forma").hidden = true;
         $("#oyna-natija").hidden = false;
     }
 }
-function oynaniOch(ochiq) {
-    const oyna = $("#buyurtma-oyna");
-    if (ochiq) {
-        $("#oyna-forma").hidden = false;
-        $("#oyna-natija").hidden = true;
-        $("#oyna-jami").textContent = narxMatn(savatJami());
-        savatniOch(false);
-        oyna.showModal();
-    }
-    else {
-        oyna.close();
-    }
+function buyurtmaOynasi(ochiq) {
+    const d = $("#buyurtma-oyna");
+    if (!ochiq)
+        return d.close();
+    $("#oyna-forma").hidden = false;
+    $("#oyna-natija").hidden = true;
+    $("#oyna-jami").textContent = narxMatn(savatJami());
+    savatniOch(false);
+    d.showModal();
 }
 // ---------------------------------------------------------------------
-// KICHIK XABAR (toast)
+// XABAR (toast)
 // ---------------------------------------------------------------------
 let xabarTaymer = 0;
 function xabar(matn) {
@@ -247,18 +438,22 @@ function xabar(matn) {
     t.textContent = matn;
     t.classList.add("korin");
     window.clearTimeout(xabarTaymer);
-    xabarTaymer = window.setTimeout(() => t.classList.remove("korin"), 1800);
+    xabarTaymer = window.setTimeout(() => t.classList.remove("korin"), 1900);
 }
 // ---------------------------------------------------------------------
-// HODISALAR (EVENTS)
+// HODISALAR
 // ---------------------------------------------------------------------
-function hodisalarniUla() {
-    // Turkum tugmalari
-    document.querySelectorAll("[data-turkum]").forEach((b) => b.addEventListener("click", () => {
-        tanlanganTurkum = b.dataset.turkum;
-        document.querySelectorAll("[data-turkum]").forEach((x) => x.classList.toggle("faol", x === b));
-        katalogniChiz();
-    }));
+function hodisalar() {
+    galereyaHodisalari();
+    // Filtr tugmalari (katalog tablari va turkum plitkalari)
+    document.addEventListener("click", (e) => {
+        const b = e.target.closest("[data-filtr]");
+        if (!b)
+            return;
+        filtrniTanla(b.dataset.filtr);
+        if (b.hasAttribute("data-katalogga"))
+            katalogga();
+    });
     $("#qidiruv").addEventListener("input", (e) => {
         qidiruv = e.target.value;
         katalogniChiz();
@@ -267,16 +462,75 @@ function hodisalarniUla() {
         saralash = e.target.value;
         katalogniChiz();
     });
-    // "Savatga qo'shish" — katalog ichidagi tugmalar
+    // Katalog ichidagi bosishlar
     $("#katalog").addEventListener("click", (e) => {
-        const b = e.target.closest("[data-qosh]");
-        if (!b)
+        const t = e.target;
+        const karta = t.closest(".karta");
+        if (!karta)
             return;
-        const id = Number(b.dataset.qosh);
-        const tanlangan = document.querySelector(`input[name="o-${id}"]:checked`);
-        savatgaQosh(id, tanlangan?.value ?? "");
+        const id = Number(karta.dataset.id);
+        const sev = t.closest("[data-sevimli]");
+        if (sev)
+            return sevimliAlmashtir(id);
+        const rang = t.closest("[data-karta-rang]");
+        if (rang) {
+            kartaVariant.set(id, Number(rang.dataset.kartaRang));
+            const m = mahsulotTop(id);
+            const yangi = document.createElement("div");
+            yangi.innerHTML = kartaHTML(m);
+            karta.replaceWith(yangi.firstElementChild);
+            return;
+        }
+        if (t.closest("[data-ochish]"))
+            tovarOynasiniOch(id);
     });
-    // Savatcha ichidagi +, −, ✕
+    // Klaviatura: karta ustida Enter
+    $("#katalog").addEventListener("keydown", (e) => {
+        const t = e.target;
+        if (e.key === "Enter" && t.matches("[data-galereya]")) {
+            const id = Number(t.closest(".karta")?.dataset.id);
+            if (id)
+                tovarOynasiniOch(id);
+        }
+    });
+    // Bosh sahifadagi tovar havolalari
+    document.querySelectorAll("[data-tovar]").forEach((el) => el.addEventListener("click", () => tovarOynasiniOch(Number(el.dataset.tovar))));
+    // Tovar oynasi
+    const tOyna = $("#tovar-oyna");
+    tOyna.addEventListener("click", (e) => {
+        const t = e.target;
+        if (t === tOyna)
+            return tOyna.close();
+        if (t.closest("#btn-tovar-yop"))
+            return tOyna.close();
+        const rang = t.closest("[data-oyna-rang]");
+        if (rang && oynaTovar) {
+            oynaVariant = Number(rang.dataset.oynaRang);
+            kartaVariant.set(oynaTovar.id, oynaVariant);
+            return tovarOynasiniChiz();
+        }
+        const ol = t.closest("[data-olcham]");
+        if (ol) {
+            oynaOlcham = ol.dataset.olcham ?? "";
+            return tovarOynasiniChiz();
+        }
+        const sn = t.closest("[data-oyna-soni]");
+        if (sn) {
+            oynaSoni = Math.max(1, Math.min(20, oynaSoni + Number(sn.dataset.oynaSoni)));
+            return tovarOynasiniChiz();
+        }
+        const th = t.closest("[data-thumb]");
+        if (th) {
+            const gal = $("[data-galereya]", tOyna);
+            return galereyagaOt(gal, Number(th.dataset.thumb));
+        }
+        if (t.closest("[data-sevimli]") && oynaTovar)
+            return sevimliAlmashtir(oynaTovar.id);
+        if (t.closest("#btn-oyna-savat"))
+            return oynadanSavatga();
+    });
+    tOyna.addEventListener("close", () => katalogniChiz());
+    // Savatcha
     $("#savat-royxat").addEventListener("click", (e) => {
         const b = e.target.closest("button");
         if (!b)
@@ -284,10 +538,9 @@ function hodisalarniUla() {
         if (b.dataset.kopay)
             savat[Number(b.dataset.kopay)].soni++;
         if (b.dataset.kamay) {
-            const q = savat[Number(b.dataset.kamay)];
-            q.soni--;
-            if (q.soni <= 0)
-                savat.splice(Number(b.dataset.kamay), 1);
+            const i = Number(b.dataset.kamay);
+            if (--savat[i].soni <= 0)
+                savat.splice(i, 1);
         }
         if (b.dataset.ochir)
             savat.splice(Number(b.dataset.ochir), 1);
@@ -301,20 +554,35 @@ function hodisalarniUla() {
         if (e.key === "Escape")
             savatniOch(false);
     });
-    $("#btn-buyurtma").addEventListener("click", () => oynaniOch(true));
-    $("#btn-oyna-yop").addEventListener("click", () => oynaniOch(false));
+    // Header tugmalari
+    $("#btn-qidiruv").addEventListener("click", () => {
+        katalogga();
+        window.setTimeout(() => $("#qidiruv").focus({ preventScroll: true }), 450);
+    });
+    $("#btn-sevimli").addEventListener("click", () => {
+        filtrniTanla("sevimli");
+        katalogga();
+    });
+    // Buyurtma
+    $("#btn-buyurtma").addEventListener("click", () => buyurtmaOynasi(true));
+    $("#btn-oyna-yop").addEventListener("click", () => buyurtmaOynasi(false));
     $("#buyurtma-forma").addEventListener("submit", (e) => buyurtmaYubor(e));
     $("#btn-nusxa").addEventListener("click", async () => {
-        const matn = $("#tayyor-matn").value;
+        const ta = $("#tayyor-matn");
         try {
-            await navigator.clipboard.writeText(matn);
+            await navigator.clipboard.writeText(ta.value);
             xabar("Nusxalandi ✓");
         }
         catch {
-            $("#tayyor-matn").select();
+            ta.select();
             xabar("Matnni belgilab, nusxalang");
         }
     });
+    // Header soyasi (skroll qilinganda)
+    const header = $(".menyu");
+    const soya = () => header.classList.toggle("suzuvchi", window.scrollY > 8);
+    window.addEventListener("scroll", soya, { passive: true });
+    soya();
 }
 // ---------------------------------------------------------------------
 // ISHGA TUSHIRISH
@@ -330,11 +598,13 @@ function boshlash() {
         tg.textContent = "@" + DOKON.telegram;
     }
     else {
-        tg.textContent = "Tez orada";
+        tg.textContent = "tez orada";
         tg.removeAttribute("href");
     }
+    savat = savat.filter((q) => mahsulotTop(q.id));
+    sanoqlarniYangila();
     katalogniChiz();
     savatniChiz();
-    hodisalarniUla();
+    hodisalar();
 }
 boshlash();

@@ -2,127 +2,213 @@
 <html lang="uz">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Aliyevs Store — kiyim do'koni</title>
-  <meta name="description" content="Aliyevs Store — Andijondagi zamonaviy kiyim do'koni. Erkaklar, ayollar va bolalar kiyimlari.">
-  <meta name="theme-color" content="#111111">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Aliyevs Store — kiyim va poyabzal do'koni</title>
+  <meta name="description" content="Aliyevs Store — Andijondagi zamonaviy kiyim va poyabzal do'koni. Sport va kundalik kolleksiya, Telegram orqali buyurtma.">
+  <meta name="theme-color" content="#0b0b0c">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- ===== YUQORI MENYU ===== -->
+  <!-- ================= HEADER ================= -->
   <header class="menyu">
-    <a href="#" class="logo" data-dokon-nomi>Aliyevs Store</a>
-    <nav class="havolalar">
-      <a href="#katalog-bolim">Katalog</a>
-      <a href="#biz-haqimizda">Biz haqimizda</a>
-      <a href="#aloqa">Aloqa</a>
-    </nav>
-    <button id="btn-savat" class="savat-tugma" aria-label="Savatcha">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
-      <span id="savat-soni" class="hisob" hidden>0</span>
-    </button>
-  </header>
+    <div class="menyu-ichi">
+      <a href="#" class="logo" aria-label="Aliyevs Store — bosh sahifa">
+        <svg class="logo-belgi" viewBox="0 0 154 150" aria-hidden="true"><path d="M70 0l12 21-50 109h110l12 20H0z"/><path d="M88 22l7-12 42 100h-22z"/><path d="M64 110l17-28 17 28z"/></svg>
+        <span class="logo-yozuv"><b>ALIYEVS</b><small>STORE</small></span>
+      </a>
 
-  <!-- ===== BANNER ===== -->
-  <section class="banner">
-    <div class="banner-matn">
-      <p class="kichik">Yangi mavsum · 2026</p>
-      <h1>Uslubingizni<br>biz bilan toping</h1>
-      <p>Erkaklar, ayollar va bolalar uchun sifatli kiyimlar. Buyurtma — bir necha bosishda.</p>
-      <a href="#katalog-bolim" class="tugma oq">Katalogni ko'rish →</a>
-    </div>
-  </section>
+      <nav class="havolalar" aria-label="Asosiy menyu">
+        <a href="#katalog-bolim" class="glow">Katalog</a>
+        <a href="#katalog-bolim" class="glow" data-filtr="sport">Sport</a>
+        <a href="#katalog-bolim" class="glow" data-filtr="boshqa">Boshqa</a>
+        <a href="#aloqa" class="glow">Aloqa</a>
+      </nav>
 
-  <!-- ===== AFZALLIKLAR ===== -->
-  <section class="afzalliklar">
-    <div><strong>🚚 Yetkazib berish</strong><span>Andijon bo'ylab</span></div>
-    <div><strong>🔄 Almashtirish</strong><span>14 kun ichida</span></div>
-    <div><strong>✅ Sifat kafolati</strong><span>Har bir mahsulotga</span></div>
-  </section>
-
-  <!-- ===== KATALOG ===== -->
-  <main id="katalog-bolim" class="bolim">
-    <div class="bolim-bosh">
-      <h2>Katalog</h2>
-      <div class="boshqaruv">
-        <input id="qidiruv" type="search" placeholder="Qidirish…" aria-label="Qidirish">
-        <select id="saralash" aria-label="Saralash">
-          <option value="standart">Saralash</option>
-          <option value="arzon">Avval arzon</option>
-          <option value="qimmat">Avval qimmat</option>
-        </select>
+      <div class="ikon-tugmalar">
+        <button id="btn-qidiruv" class="ikon glow" aria-label="Qidirish" title="Qidirish">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+        </button>
+        <button id="btn-sevimli" class="ikon glow" aria-label="Sevimlilar" title="Sevimlilar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>
+          <span id="sevimli-soni" class="hisob" hidden>0</span>
+        </button>
+        <a href="#aloqa" class="ikon glow" aria-label="Aloqa" title="Aloqa">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4 3 11l6.5 2.2M21 4l-3 16-8.5-6.8M21 4 9.5 13.2V19l3-3.4"/></svg>
+        </a>
+        <button id="btn-savat" class="ikon glow savat-ikon" aria-label="Savatcha" title="Savatcha">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 8h13l-1 12h-11z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
+          <span id="savat-soni" class="hisob" hidden>0</span>
+        </button>
       </div>
     </div>
-    <div class="turkumlar">
-      <button data-turkum="hammasi" class="faol">Hammasi</button>
-      <button data-turkum="erkaklar">Erkaklar</button>
-      <button data-turkum="ayollar">Ayollar</button>
-      <button data-turkum="bolalar">Bolalar</button>
+  </header>
+
+  <main>
+    <!-- ================= HERO ================= -->
+    <section class="hero">
+      <div class="hero-ichi">
+        <div class="hero-matn">
+          <p class="ustki">Kuz — Qish 2026 · Andijon</p>
+          <h1>Uslubni<br><span class="kontur">siz</span> tanlaysiz.</h1>
+          <p class="hero-izoh">Kurtka, hudi va krossovkalar — tanlab olingan 20 ta model. Buyurtma bir necha bosishda, yetkazib berish ertasigayoq.</p>
+          <div class="hero-tugmalar">
+            <a href="#katalog-bolim" class="tugma asosiy glow">Katalogni ko'rish</a>
+            <a href="#katalog-bolim" class="tugma glow" data-filtr="sport">Sport kolleksiya</a>
+          </div>
+          <dl class="hero-raqamlar">
+            <div><dt>20</dt><dd>model</dd></div>
+            <div><dt>1 kun</dt><dd>yetkazish</dd></div>
+            <div><dt>14 kun</dt><dd>almashtirish</dd></div>
+          </dl>
+        </div>
+
+        <div class="hero-kollaj">
+          <button class="kollaj-rasm k1 glow" data-tovar="7">
+            <img src="img/p07-1.webp" alt="Tvid kurtka kapyushonli">
+            <span class="kollaj-yorliq">Tvid kurtka <b>690 000</b></span>
+          </button>
+          <button class="kollaj-rasm k2 glow" data-tovar="19">
+            <img src="img/p19-sariq-3.webp" alt="Paypoq-krossovka Blade">
+            <span class="kollaj-yorliq">«Blade» <b>450 000</b></span>
+          </button>
+          <button class="kollaj-rasm k3 glow" data-tovar="2">
+            <img src="img/p02-1.webp" alt="Charm kurtka, velvet yoqa">
+            <span class="kollaj-yorliq">Charm kurtka <b>790 000</b></span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= YUGURUVCHI LENTA ================= -->
+    <div class="lenta" aria-hidden="true">
+      <div class="lenta-ichi">
+        <span>Yangi kolleksiya</span><i>◢</i><span>Andijon bo'ylab yetkazib berish</span><i>◢</i><span>14 kun ichida almashtirish</span><i>◢</i><span>Telegram orqali buyurtma</span><i>◢</i>
+        <span>Yangi kolleksiya</span><i>◢</i><span>Andijon bo'ylab yetkazib berish</span><i>◢</i><span>14 kun ichida almashtirish</span><i>◢</i><span>Telegram orqali buyurtma</span><i>◢</i>
+      </div>
     </div>
-    <div id="katalog" class="katalog"></div>
+
+    <!-- ================= TURKUMLAR ================= -->
+    <section class="turkum-plitkalar bolim">
+      <button class="plitka glow" data-filtr="sport" data-katalogga>
+        <img src="img/p13-2.webp" alt="" loading="lazy">
+        <span class="plitka-matn"><small>Kolleksiya</small><b>Sport</b><em><span data-sanoq="sport">6</span> ta model →</em></span>
+      </button>
+      <button class="plitka glow" data-filtr="boshqa" data-katalogga>
+        <img src="img/p11-bordo-1.webp" alt="" loading="lazy">
+        <span class="plitka-matn"><small>Kolleksiya</small><b>Boshqa</b><em><span data-sanoq="boshqa">14</span> ta model →</em></span>
+      </button>
+    </section>
+
+    <!-- ================= KATALOG ================= -->
+    <section id="katalog-bolim" class="bolim katalog-bolim">
+      <div class="katalog-bosh">
+        <div>
+          <p class="ustki">Katalog</p>
+          <h2>Barcha tovarlar</h2>
+        </div>
+        <div class="boshqaruv">
+          <label class="qidiruv-maydon glow-maydon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+            <input id="qidiruv" type="search" placeholder="Qidirish: hudi, krossovka…" aria-label="Qidirish" autocomplete="off">
+          </label>
+          <select id="saralash" class="glow-maydon" aria-label="Saralash">
+            <option value="standart">Tavsiya etilgan</option>
+            <option value="yangi">Avval yangilari</option>
+            <option value="arzon">Avval arzon</option>
+            <option value="qimmat">Avval qimmat</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="tablar" role="tablist" aria-label="Turkumlar">
+        <button class="tab glow faol" role="tab" aria-selected="true" data-filtr="hammasi">Hammasi <span data-sanoq="hammasi">20</span></button>
+        <button class="tab glow" role="tab" aria-selected="false" data-filtr="sport">Sport <span data-sanoq="sport">6</span></button>
+        <button class="tab glow" role="tab" aria-selected="false" data-filtr="boshqa">Boshqa <span data-sanoq="boshqa">14</span></button>
+        <button class="tab glow" role="tab" aria-selected="false" data-filtr="sevimli">♥ Sevimlilar <span data-sanoq="sevimli">0</span></button>
+        <span id="natija-soni" class="natija-soni"></span>
+      </div>
+
+      <div id="katalog" class="katalog"></div>
+    </section>
+
+    <!-- ================= AFZALLIKLAR ================= -->
+    <section class="bolim afzalliklar">
+      <div><b>01</b><strong>Yetkazib berish</strong><span>Andijon shahri bo'ylab — ertasi kuni. Viloyatlarga 2–3 kunda.</span></div>
+      <div><b>02</b><strong>Kiyib ko'rib to'lash</strong><span>Kuryer kelganda kiyib ko'rasiz, yoqsa to'laysiz.</span></div>
+      <div><b>03</b><strong>14 kun almashtirish</strong><span>O'lcham to'g'ri kelmasa, boshqasiga almashtiramiz.</span></div>
+    </section>
   </main>
 
-  <!-- ===== BIZ HAQIMIZDA ===== -->
-  <section id="biz-haqimizda" class="bolim haqida">
-    <h2>Biz haqimizda</h2>
-    <p><strong data-dokon-nomi>Aliyevs Store</strong> — zamonaviy va qulay kiyimlarni hamyonbop narxlarda taklif qiluvchi do'kon. Har bir mahsulotni sifatini tekshirib, siz uchun tanlaymiz.</p>
-  </section>
-
-  <!-- ===== ALOQA ===== -->
+  <!-- ================= FOOTER ================= -->
   <footer id="aloqa" class="pastki">
-    <div>
-      <div class="logo" data-dokon-nomi>Aliyevs Store</div>
-      <p>© <span id="yil">2026</span> · Barcha huquqlar himoyalangan</p>
+    <div class="pastki-ichi">
+      <div class="pastki-logo">
+        <svg class="logo-belgi" viewBox="0 0 154 150" aria-hidden="true"><path d="M70 0l12 21-50 109h110l12 20H0z"/><path d="M88 22l7-12 42 100h-22z"/><path d="M64 110l17-28 17 28z"/></svg>
+        <span class="logo-yozuv katta"><b>ALIYEVS</b><small>STORE</small></span>
+      </div>
+      <div>
+        <h4>Aloqa</h4>
+        <p>📍 <span id="shahar">Andijon</span></p>
+        <p>🕘 <span id="ish-vaqti"></span></p>
+        <p>✈️ Telegram: <a id="tg-havola" target="_blank" rel="noopener"></a></p>
+      </div>
+      <div>
+        <h4>Do'kon</h4>
+        <p><a href="#katalog-bolim" data-filtr="sport">Sport</a></p>
+        <p><a href="#katalog-bolim" data-filtr="boshqa">Boshqa</a></p>
+        <p><a href="#katalog-bolim" data-filtr="sevimli">Sevimlilar</a></p>
+      </div>
     </div>
-    <div>
-      <h4>Aloqa</h4>
-      <p>📍 <span id="shahar">Andijon</span></p>
-      <p>🕘 <span id="ish-vaqti"></span></p>
-      <p>✈️ Telegram: <a id="tg-havola" target="_blank" rel="noopener"></a></p>
-    </div>
+    <p class="mualliflik">© <span id="yil">2026</span> <span data-dokon-nomi>Aliyevs Store</span> · Barcha huquqlar himoyalangan</p>
   </footer>
 
-  <!-- ===== SAVATCHA (o'ngdan chiqadi) ===== -->
+  <!-- ================= SAVATCHA ================= -->
   <div id="parda" class="parda"></div>
-  <aside class="savat" aria-label="Savatcha">
+  <aside class="savat" aria-label="Savatcha" aria-hidden="true">
     <div class="savat-bosh">
       <h3>Savatcha</h3>
-      <button id="btn-savat-yop" class="yopish" aria-label="Yopish">✕</button>
+      <button id="btn-savat-yop" class="yopish glow" aria-label="Yopish">✕</button>
     </div>
     <div id="savat-royxat" class="savat-royxat"></div>
     <div class="savat-past">
-      <div class="jami"><span>Jami:</span><strong id="savat-jami">0 so'm</strong></div>
-      <button id="btn-buyurtma" class="tugma qora toliq">Buyurtma berish</button>
+      <div class="jami"><span>Jami</span><strong id="savat-jami">0 so'm</strong></div>
+      <button id="btn-buyurtma" class="tugma asosiy glow toliq">Buyurtma berish</button>
     </div>
   </aside>
 
-  <!-- ===== BUYURTMA OYNASI ===== -->
+  <!-- ================= TOVAR OYNASI ================= -->
+  <dialog id="tovar-oyna" class="tovar-oyna" aria-labelledby="tovar-sarlavha">
+    <button id="btn-tovar-yop" class="yopish glow" aria-label="Yopish">✕</button>
+    <div id="tovar-oyna-ichi" class="tovar-oyna-ichi"></div>
+  </dialog>
+
+  <!-- ================= BUYURTMA OYNASI ================= -->
   <dialog id="buyurtma-oyna" class="oyna">
-    <button id="btn-oyna-yop" class="yopish" aria-label="Yopish">✕</button>
+    <button id="btn-oyna-yop" class="yopish glow" aria-label="Yopish">✕</button>
     <div id="oyna-forma">
       <h3>Buyurtmani rasmiylashtirish</h3>
       <p class="oyna-jami">Jami: <strong id="oyna-jami"></strong></p>
       <form id="buyurtma-forma">
-        <label>Ismingiz<input name="ism" required autocomplete="name"></label>
-        <label>Telefon raqam<input name="tel" type="tel" required placeholder="+998 __ ___ __ __" autocomplete="tel"></label>
-        <label>Manzil<input name="manzil" required placeholder="Shahar, ko'cha, uy" autocomplete="street-address"></label>
-        <label>Izoh (ixtiyoriy)<textarea name="izoh" rows="2"></textarea></label>
-        <button class="tugma qora toliq" type="submit">Telegram orqali yuborish</button>
+        <label>Ismingiz<input id="f-ism" name="ism" required autocomplete="name"></label>
+        <label>Telefon raqam<input id="f-tel" name="tel" type="tel" required placeholder="+998 __ ___ __ __" autocomplete="tel"></label>
+        <label>Manzil<input id="f-manzil" name="manzil" required placeholder="Shahar, ko'cha, uy" autocomplete="street-address"></label>
+        <label>Izoh (ixtiyoriy)<textarea id="f-izoh" name="izoh" rows="2"></textarea></label>
+        <button class="tugma asosiy glow toliq" type="submit">Telegram orqali yuborish</button>
       </form>
     </div>
     <div id="oyna-natija" hidden>
       <h3>Buyurtma tayyor ✓</h3>
-      <p>Do'kon Telegram manzili hali sozlanmagan. Quyidagi matnni nusxalab, sotuvchiga yuboring:</p>
+      <p>Do'kon Telegram manzili hali sozlanmagan. Matnni nusxalab, sotuvchiga yuboring:</p>
       <textarea id="tayyor-matn" rows="10" readonly></textarea>
-      <button id="btn-nusxa" class="tugma qora toliq">Nusxalash</button>
+      <button id="btn-nusxa" class="tugma asosiy glow toliq">Nusxalash</button>
     </div>
   </dialog>
 
-  <div id="xabar" class="xabar" role="status"></div>
+  <div id="xabar" class="xabar" role="status" aria-live="polite"></div>
 
   <script src="dist/products.js"></script>
   <script src="dist/app.js"></script>
