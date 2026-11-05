@@ -296,7 +296,7 @@ body::before {
   font-size: 13px; font-weight: 600; text-align: left;
 }
 .sahna-yorliq small { font-family: var(--f-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; background: var(--aksent); color: #0b0b0c; }
-.sahna-yorliq b { font-family: var(--f-mono); font-weight: 500; color: var(--aksent); margin-left: auto; }
+.sahna-yorliq b { font-family: var(--f-brend); font-weight: 700; letter-spacing: .02em; color: var(--aksent); margin-left: auto; }
 
 .hero-pastga {
   position: absolute; left: 50%; bottom: 22px; translate: -50% 0;
@@ -474,10 +474,10 @@ select.glow-maydon {
 .karta h3 { font-family: var(--f-matn); font-weight: 700; font-size: 16px; line-height: 1.3; cursor: pointer; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.6em; }
 .karta h3:hover { color: var(--aksent-yorug); }
 .narx { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-variant-numeric: tabular-nums; }
-.narx span { font-family: var(--f-display); font-weight: 400; font-size: 16px; letter-spacing: -.01em; }
+.narx span { font-family: var(--f-brend); font-weight: 700; font-size: 16px; letter-spacing: .01em; }
 .narx s { font-size: 13px; color: var(--matn-2); }
 
-.ranglar { display: flex; flex-wrap: nowrap; gap: 6px; align-items: center; height: 24px; overflow: hidden; }
+.ranglar { display: flex; flex-wrap: nowrap; gap: 8px; align-items: center; height: 30px; padding: 0 3px; margin-left: -3px; overflow: visible; }
 .karta .narx { min-height: 2.9em; align-content: flex-start; }
 .rang {
   width: 20px; height: 20px; border-radius: 50%; padding: 0; cursor: pointer;
@@ -510,19 +510,22 @@ select.glow-maydon {
    FOOTER
    ===================================================================== */
 .pastki { position: relative; margin-top: 96px; background: #070708; border-top: 1px solid var(--chiziq); overflow: hidden; }
-.pastki::before {   /* nozik to'r naqshi */
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
-  background-size: 56px 56px;
-  -webkit-mask: radial-gradient(ellipse 80% 70% at 50% 30%, #000 30%, transparent 85%);
-  mask: radial-gradient(ellipse 80% 70% at 50% 30%, #000 30%, transparent 85%);
-  animation: tor 30s linear infinite;
-}
-@keyframes tor { to { background-position: 56px 56px, 56px 56px; } }
 .pastki-fon { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
 .pastki-fon i { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .55; }
+.uch { position: absolute; height: auto; fill: none; stroke: rgba(226,192,141,.32); stroke-width: 1.2; vector-effect: non-scaling-stroke; animation: uch-suz 24s ease-in-out infinite alternate; }
+.uch.u1 { width: 160px; left: 6%;  top: 14%; animation-duration: 26s; }
+.uch.u2 { width: 70px;  left: 30%; top: 62%; stroke: rgba(226,192,141,.5); animation-duration: 18s; animation-delay: -6s; }
+.uch.u3 { width: 240px; left: 52%; top: -40px; stroke: rgba(255,255,255,.08); animation-duration: 32s; }
+.uch.u4 { width: 46px;  left: 71%; top: 46%; stroke: rgba(226,192,141,.6); animation-duration: 16s; animation-delay: -3s; }
+.uch.u5 { width: 120px; left: 86%; top: 66%; animation-duration: 22s; animation-delay: -9s; }
+.uch.u6 { width: 34px;  left: 16%; top: 80%; stroke: rgba(255,255,255,.22); animation-duration: 14s; }
+.uch.u7 { width: 90px;  left: 44%; top: 30%; stroke: rgba(226,192,141,.18); animation-duration: 28s; animation-delay: -12s; }
+.uch.u8 { width: 56px;  left: 92%; top: 12%; stroke: rgba(255,255,255,.16); animation-duration: 20s; animation-delay: -5s; }
+@keyframes uch-suz {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  50%  { transform: translate(24px, -30px) rotate(60deg); }
+  100% { transform: translate(-18px, 20px) rotate(120deg); }
+}
 .pastki-fon .d1 { width: 520px; height: 520px; left: -120px; top: -160px; background: rgba(226,192,141,.28); animation: dog1 18s ease-in-out infinite alternate; }
 .pastki-fon .d2 { width: 420px; height: 420px; right: -80px; top: 10%; background: rgba(150,160,190,.16); animation: dog2 22s ease-in-out infinite alternate; }
 .pastki-fon .d3 { width: 380px; height: 380px; left: 35%; bottom: -200px; background: rgba(226,160,90,.18); animation: dog3 16s ease-in-out infinite alternate; }
@@ -533,22 +536,23 @@ select.glow-maydon {
   position: relative;
   max-width: 1360px; margin: 0 auto;
   display: flex; flex-wrap: wrap; gap: 28px; align-items: center; justify-content: space-between;
-  padding-block: 64px 56px; padding-left: var(--gutter); padding-right: var(--gutter-o);
+  padding-block: 48px 40px; padding-left: var(--gutter); padding-right: var(--gutter-o);
   border-bottom: 1px solid #18181b;
 }
 .cta-matn { min-width: 0; }
-.cta-matn h2 { font-family: var(--f-display); font-weight: 400; font-size: clamp(38px, 5.4vw, 76px); line-height: .95; text-transform: uppercase; letter-spacing: .005em; }
+.cta-matn h2 { font-family: var(--f-brend); font-weight: 600; font-size: clamp(22px, 2.3vw, 30px); line-height: 1.2; letter-spacing: -.01em; }
+.cta-matn .ustki { margin-bottom: 8px; }
 .tg-tugma {
-  display: flex; align-items: center; gap: 16px;
-  padding: 18px 22px 18px 18px; border-radius: 22px;
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 18px 8px 8px; border-radius: 999px;
   background: var(--sirt); border: 1px solid var(--chiziq);
   text-decoration: none; min-width: 0;
 }
-.tg-tugma svg { width: 54px; height: 54px; padding: 13px; border-radius: 50%; background: var(--aksent); fill: none; stroke: #0b0b0c; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; transition: transform .3s; }
+.tg-tugma svg { width: 40px; height: 40px; padding: 10px; border-radius: 50%; background: var(--aksent); fill: none; stroke: #0b0b0c; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; transition: transform .3s; }
 .tg-tugma span { display: flex; flex-direction: column; min-width: 0; }
-.tg-tugma small { font-family: var(--f-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--matn-2); }
-.tg-tugma b { font-size: clamp(18px, 2.2vw, 24px); font-weight: 700; overflow-wrap: anywhere; }
-.tg-tugma i { font-style: normal; font-size: 22px; color: var(--aksent); margin-left: 8px; transition: transform .3s; }
+.tg-tugma small { font-family: var(--f-brend); font-weight: 500; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--matn-2); }
+.tg-tugma b { font-family: var(--f-brend); font-size: 15.5px; font-weight: 600; line-height: 1.25; overflow-wrap: anywhere; }
+.tg-tugma i { font-style: normal; font-size: 17px; color: var(--aksent); margin-left: 8px; transition: transform .3s; }
 .tg-tugma:hover { background: var(--sirt-2); }
 .tg-tugma:hover svg { transform: rotate(-12deg) scale(1.05); }
 .tg-tugma:hover i { transform: translate(3px, -3px); }
@@ -600,7 +604,7 @@ select.glow-maydon {
 .olib-tashla:hover { color: var(--chegirma); }
 .savat-past { padding: 20px; border-top: 1px solid var(--chiziq); }
 .jami { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; color: var(--matn-2); }
-.jami strong { color: var(--matn); font-family: var(--f-display); font-size: 22px; }
+.jami strong { color: var(--matn); font-family: var(--f-brend); font-weight: 700; font-size: 20px; letter-spacing: .01em; }
 
 .soni { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--chiziq); border-radius: 999px; padding: 4px; background: var(--sirt-2); }
 .soni button { width: 38px; height: 38px; border-radius: 50%; border: 0; background: transparent; cursor: pointer; font-size: 18px; }
@@ -815,9 +819,9 @@ dialog::backdrop { background: rgba(0,0,0,.7); backdrop-filter: blur(4px); }
   .karta-turkum { display: none; }
   .karta h3 { font-size: 11.5px; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.5em; }
   .narx { gap: 0 4px; }
-  .narx span { font-size: 11.5px; }
+  .narx span { font-size: 11.5px; letter-spacing: 0; }
   .narx s { font-size: 9.5px; }
-  .ranglar { gap: 3px; height: 14px; }
+  .ranglar { gap: 5px; height: 20px; padding: 0 2px; margin-left: -2px; }
   .karta .narx { min-height: 2.4em; }
   .karta-info .ranglar { margin-bottom: 0; }
   .rang { width: 13px; height: 13px; border-width: 1.5px; }
@@ -828,8 +832,9 @@ dialog::backdrop { background: rgba(0,0,0,.7); backdrop-filter: blur(4px); }
   .afzalliklar div { padding: 18px; }
 
   .pastki { margin-top: 64px; }
-  .pastki-cta { padding-block: 48px 40px; }
-  .tg-tugma { width: 100%; }
+  .pastki-cta { padding-block: 36px 30px; }
+  .uch.u3 { width: 150px; } .uch.u1 { width: 100px; } .uch.u5 { width: 80px; }
+  .tg-tugma { width: max-content; max-width: 100%; }
   .pastki-ichi { grid-template-columns: 1fr 1fr; gap: 28px 20px; padding-top: 36px; }
   .pastki-logo { grid-column: 1 / -1; }
   .pastki-logo img { width: 120px; }
@@ -866,7 +871,7 @@ dialog::backdrop { background: rgba(0,0,0,.7); backdrop-filter: blur(4px); }
   .hero-pill { font-size: 12.5px; padding: 7px 14px 7px 11px; }
 
   .lenta-ichi { font-size: 12px; padding: 13px 0; gap: 20px; }
-  .cta-matn h2 { font-size: 40px; }
+  .cta-matn h2 { font-size: 22px; }
   .pastki-cta { flex-direction: column; align-items: stretch; gap: 22px; }
   .t-media { padding: 10px 10px 0; }
   .t-info { padding: 14px var(--gutter-o) 22px var(--gutter); gap: 12px; }
@@ -881,5 +886,5 @@ dialog::backdrop { background: rgba(0,0,0,.7); backdrop-filter: blur(4px); }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .glow:hover::before, .glow:focus-visible::before { animation: none; background: var(--aksent); }
-  .lenta-ichi, .lenta, .lenta::before, .lenta::after, .hero-fon img, .sahna-karta, .hero::after, .pastki::before, .pastki-fon i { animation: none !important; }
+  .lenta-ichi, .lenta, .lenta::before, .lenta::after, .hero-fon img, .sahna-karta, .hero::after, .pastki-fon i, .uch { animation: none !important; }
 }

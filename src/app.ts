@@ -405,8 +405,8 @@ function otzivlarHTML(m: Mahsulot): string {
             .join("")}
           <span class="baho-matn">${oynaBaho ? ["", "Yomon", "O'rtacha emas", "Yaxshi", "Juda yaxshi", "A'lo!"][oynaBaho] : "Baho bering"}</span>
         </div>
-        <label>Ismingiz<input id="o-ism" name="ism" autocomplete="given-name" required placeholder="Masalan: Jasur"></label>
-        <label>Fikringiz<textarea id="o-matn" name="matn" rows="3" required placeholder="O'lchami, sifati, yetkazib berish haqida…"></textarea></label>
+        <label>Ismingiz<input id="o-ism" name="ism" autocomplete="given-name" required placeholder="Ismingizni yozing"></label>
+        <label>Fikringiz<textarea id="o-matn" name="matn" rows="3" required placeholder="Fikringizni yozing"></textarea></label>
         <span class="t-xato" id="otziv-xato" hidden>Baho, ism va fikrni to'ldiring</span>
         <button class="tugma asosiy glow toliq" type="submit">Telegram orqali yuborish</button>
         <small class="otziv-izoh">Otzivlar tekshirilgandan keyin saytda chiqadi.</small>
