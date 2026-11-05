@@ -698,10 +698,38 @@ function boshlash() {
         tg.textContent = "tez orada";
         tg.removeAttribute("href");
     }
-    savat = savat.filter((q) => mahsulotTop(q.id));
     sanoqlarniYangila();
     katalogniChiz();
     savatniChiz();
     hodisalar();
+    serverdanYukla();
+}
+// ---------------------------------------------------------------------
+// ADMIN PANEL ORQALI QO'SHILGAN TOVARLAR (Cloudflare D1 bazasidan)
+// ---------------------------------------------------------------------
+async function serverdanYukla() {
+    try {
+        const javob = await fetch("/api/tovarlar");
+        if (javob.ok) {
+            const yangilar = (await javob.json());
+            for (const m of yangilar) {
+                if (!mahsulotTop(m.id) && Array.isArray(m.variantlar) && m.variantlar.length)
+                    mahsulotlar.unshift(m);
+            }
+            if (yangilar.length) {
+                sanoqlarniYangila();
+                katalogniChiz();
+            }
+        }
+    }
+    catch {
+        /* server yo'q (masalan, faylni to'g'ridan-to'g'ri ochganda) — faqat asosiy tovarlar */
+    }
+    // Savatchada endi mavjud bo'lmagan tovarlar bo'lsa, olib tashlaymiz
+    const oldin = savat.length;
+    savat = savat.filter((q) => mahsulotTop(q.id));
+    if (savat.length !== oldin)
+        savatniSaqla();
+    savatniChiz();
 }
 boshlash();

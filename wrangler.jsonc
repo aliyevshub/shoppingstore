@@ -1,8 +1,12 @@
-// Cloudflare sozlamasi: sayt fayllari shu papkaning o'zida turadi
+// Cloudflare sozlamasi
+// - Sayt fayllari (HTML, CSS, rasmlar) shu papkadan beriladi
+// - worker/index.ts — /api/... so'rovlari uchun server (admin panel)
 {
   "name": "aliyevs-store",
+  "main": "worker/index.ts",
   "compatibility_date": "2025-09-01",
   "assets": {
-    "directory": "./"
+    "directory": "./",
+    "binding": "ASSETS"
   }
 }

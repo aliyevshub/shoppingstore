@@ -1,6 +1,12 @@
 src
+worker
+node_modules
+.wrangler
 tsconfig.json
 README.md
 wrangler.jsonc
+wrangler.test.jsonc
+.dev.vars
 .assetsignore
 .git
+.gitignore

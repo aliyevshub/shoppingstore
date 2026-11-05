@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Admin — Aliyevs Store</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0b0b0c">
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Montserrat:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin">
+  <!-- ================= KIRISH ================= -->
+  <main id="kirish" class="kirish">
+    <form id="kirish-forma" class="kirish-karta">
+      <img src="logo.png" alt="Aliyevs Store" width="514" height="325">
+      <h1>Admin panel</h1>
+      <p>Davom etish uchun parolni kiriting.</p>
+      <label>Parol
+        <input id="parol" type="password" autocomplete="current-password" required>
+      </label>
+      <span id="kirish-xato" class="a-xato" role="alert" hidden></span>
+      <button class="tugma asosiy glow toliq" type="submit" id="kirish-tugma">Kirish</button>
+      <a class="orqaga" href="/">← Saytga qaytish</a>
+    </form>
+  </main>
+
+  <!-- ================= PANEL ================= -->
+  <div id="panel" hidden>
+    <header class="a-header">
+      <div class="a-header-ichi">
+        <a href="/" class="a-logo" title="Saytni ochish"><img src="logo.png" alt="Aliyevs Store" width="514" height="325"></a>
+        <span class="a-nishon">Admin</span>
+        <div class="a-header-tugmalar">
+          <a class="tugma glow" href="/" target="_blank" rel="noopener">Saytni ochish ↗</a>
+          <button class="tugma glow" id="chiqish" type="button">Chiqish</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="a-ichi">
+      <section class="a-bosh">
+        <div>
+          <h1>Tovarlar</h1>
+          <p id="a-sanoq" class="a-izoh">Yuklanmoqda…</p>
+        </div>
+        <button class="tugma asosiy glow" id="yangi-tovar" type="button">+ Yangi tovar</button>
+      </section>
+
+      <p class="a-eslatma">Bu yerda admin panel orqali qo'shilgan tovarlar boshqariladi. Saytdagi dastlabki 20 ta tovar kod ichida saqlanadi.</p>
+
+      <div id="royxat" class="a-royxat"></div>
+    </main>
+  </div>
+
+  <!-- ================= TOVAR FORMASI ================= -->
+  <dialog id="forma-oyna" class="a-oyna" aria-labelledby="forma-sarlavha">
+    <form id="tovar-forma" novalidate>
+      <div class="a-oyna-bosh">
+        <h2 id="forma-sarlavha">Yangi tovar</h2>
+        <button type="button" class="yopish glow" id="forma-yop" aria-label="Yopish">✕</button>
+      </div>
+
+      <div class="a-maydonlar">
+        <label class="keng">Tovar nomi
+          <input id="f-nomi" name="nomi" required maxlength="80" placeholder="Masalan: Qishki kurtka">
+        </label>
+        <label class="keng">Tavsif
+          <textarea id="f-tavsif" name="tavsif" rows="2" maxlength="400" placeholder="Mato, bichim, xususiyatlari…"></textarea>
+        </label>
+        <label>Turkum
+          <select id="f-turkum" name="turkum">
+            <option value="sport">Sport</option>
+            <option value="casual">Casual</option>
+          </select>
+        </label>
+        <label>Turi
+          <select id="f-tur" name="tur">
+            <option value="kiyim">Kiyim</option>
+            <option value="poyabzal">Poyabzal</option>
+          </select>
+        </label>
+        <label>Narx (so'm)
+          <input id="f-narx" name="narx" type="number" inputmode="numeric" min="1000" step="1000" required placeholder="390000">
+        </label>
+        <label>Eski narx (chegirma bo'lsa)
+          <input id="f-eski" name="eskiNarx" type="number" inputmode="numeric" min="0" step="1000" placeholder="Bo'sh qoldirish mumkin">
+        </label>
+        <div class="a-belgilar keng">
+          <label class="a-check"><input id="f-yangi" type="checkbox"> <span>"Yangi" belgisi</span></label>
+          <label class="a-check"><input id="f-yashirin" type="checkbox"> <span>Saytda yashirish</span></label>
+        </div>
+      </div>
+
+      <div class="a-ranglar-bosh">
+        <h3>Ranglar va rasmlar</h3>
+        <button type="button" class="tugma glow kichik" id="rang-qosh">+ Rang qo'shish</button>
+      </div>
+      <div id="variantlar" class="a-variantlar"></div>
+
+      <span id="forma-xato" class="a-xato" role="alert" hidden></span>
+      <div class="a-oyna-past">
+        <button type="button" class="tugma glow" id="forma-bekor">Bekor qilish</button>
+        <button type="submit" class="tugma asosiy glow" id="forma-saqla">Saqlash</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="xabar" class="xabar" role="status" aria-live="polite"></div>
+
+  <script src="dist/products.js"></script>
+  <script src="dist/admin.js"></script>
+</body>
+</html>
