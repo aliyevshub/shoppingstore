@@ -928,3 +928,7 @@ dialog::backdrop { background: rgba(0,0,0,.7); backdrop-filter: blur(4px); }
   .glow:hover::before, .glow:focus-visible::before { animation: none; background: var(--aksent); }
   .harf, .lenta-ichi, .lenta, .lenta::before, .lenta::after, .hero-fon img, .sahna-karta, .hero::after, .pastki-fon i, .uch { animation: none !important; }
 }
+
+/* Hero: krossovka kartasi — poyabzal yozuv ostida qolmasin */
+.sahna-karta.s2 img { transform-origin: 50% 70%; transform: scale(1.18) translateY(-17%); }
+.sahna-karta.s2:hover img { transform: scale(1.24) translateY(-17%); }
