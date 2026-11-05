@@ -1,0 +1,8 @@
+// Cloudflare sozlamasi: sayt fayllari shu papkaning o'zida turadi
+{
+  "name": "aliyevs-store",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./"
+  }
+}
