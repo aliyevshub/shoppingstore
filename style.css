@@ -581,6 +581,8 @@ select.glow-maydon { font-family: var(--f-brend); font-weight: 500;
   border-top: 1px solid #1d1d20;
 }
 .pastki .pastki-past p { display: block; margin: 0; font-size: 13px; color: #8e8b84; }
+.pastki a.admin-havola { color: #6e6b65; font-size: 12px; }
+.pastki a.admin-havola:hover, .pastki a.admin-havola:focus-visible { color: var(--aksent); }
 .savol { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-family: var(--f-brend); font-weight: 500; font-size: 13px; color: #8e8b84; }
 .pastki a.tg-mini {
   display: inline-flex; align-items: center; gap: 8px;
