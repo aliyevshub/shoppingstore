@@ -237,39 +237,45 @@ body::before {
 
 .hero-sarlavha {
   display: flex; flex-direction: column; align-items: flex-start;
-  font-family: "Syne", var(--f-brend); font-weight: 700;
-  font-size: clamp(48px, 6.2vw, 100px);
-  line-height: 1; letter-spacing: -.015em; text-transform: uppercase;
+  font-family: "Archivo Black", "Arial Black", var(--f-brend); font-weight: 400;
+  font-size: clamp(46px, 6vw, 96px);
+  line-height: .93; letter-spacing: -.035em; text-transform: uppercase;
   outline: none; cursor: default; border-radius: 12px;
-  transition: filter .5s;
+  padding-bottom: .08em;
 }
 .hero-sarlavha .q { display: block; white-space: nowrap; animation: kirish .9s cubic-bezier(.2,.7,.2,1) both; }
 .q1 { animation-delay: .08s !important; }
-.q2 { animation-delay: .2s !important; padding-left: .9em; }
+.q2 { animation-delay: .2s !important; }
 .q3 { animation-delay: .32s !important; }
 
-/* Har bir harf: oqdan oltinga o'tuvchi rang + vaqti-vaqti bilan o'tuvchi nur */
+/* Harflar: oq, STYLE. oqdan oltinga o'tadi; ortida siljigan oltin soya */
 .harf {
   display: inline-block;
-  color: color-mix(in oklab, #f6f3ec, #d9b27a calc(var(--t) * 100%));
-  transition: transform .45s cubic-bezier(.2,.9,.25,1.35), color .35s, text-shadow .35s;
-  transition-delay: calc(var(--i) * 28ms);
+  color: var(--matn);
+  text-shadow: .06em .06em 0 rgba(226,192,141,.35);
+  transition: transform .45s cubic-bezier(.2,.9,.25,1.35), text-shadow .45s cubic-bezier(.2,.9,.25,1.35), color .35s;
+  transition-delay: calc(var(--i) * 26ms);
   animation: nur-harf 7s ease-in-out infinite;
   animation-delay: calc(1.6s + var(--i) * 70ms);
 }
-@keyframes nur-harf {
-  0%, 12%, 100% { text-shadow: none; filter: none; }
-  5% { text-shadow: 0 0 18px rgba(255,236,200,.75), 0 0 2px #fff6e3; filter: brightness(1.35); }
+.q3 .harf {
+  color: color-mix(in oklab, #f6f3ec, #d9ad6c calc((var(--t) - .55) * 220%));
+  text-shadow: .06em .06em 0 rgba(226,192,141,.25);
 }
-/* Hover / focus / bosish: harflar to'lqin bo'lib ko'tariladi va oltinga yonadi */
+@keyframes nur-harf {
+  0%, 12%, 100% { filter: none; }
+  5% { filter: brightness(1.45) drop-shadow(0 0 10px rgba(255,236,200,.55)); }
+}
+/* Hover / focus / bosish: harflar ko'tariladi, soya chuqurlashadi */
 .hero-sarlavha:hover .harf,
 .hero-sarlavha:focus-visible .harf,
 .hero-sarlavha.tolqin .harf {
-  transform: translateY(-.12em);
-  color: color-mix(in oklab, #fff3dc, #e2c08d calc(var(--t) * 60% + 30%));
-  text-shadow: 0 .12em .4em rgba(226,192,141,.35);
+  transform: translate(-.03em, -.07em);
+  text-shadow: .12em .12em 0 rgba(226,192,141,.45);
 }
-.hero-sarlavha:hover, .hero-sarlavha:focus-visible { filter: drop-shadow(0 0 28px rgba(226,192,141,.18)); }
+.hero-sarlavha:hover .q3 .harf,
+.hero-sarlavha:focus-visible .q3 .harf,
+.hero-sarlavha.tolqin .q3 .harf { color: color-mix(in oklab, #fff3dc, #e2c08d calc((var(--t) - .55) * 220%)); }
 .hero-sarlavha:focus-visible { box-shadow: 0 0 0 2px rgba(226,192,141,.45); }
 @keyframes kirish { from { opacity: 0; transform: translateY(28px); } }
 
@@ -795,7 +801,7 @@ dialog::backdrop { background: rgba(0,0,0,.7); backdrop-filter: blur(4px); }
   .hero { min-height: 0; padding-block: 24px 40px; }
   .hero::before { background: linear-gradient(180deg, rgba(11,11,12,.75) 0%, rgba(11,11,12,.88) 55%, var(--fon) 100%); }
   .hero-pill { margin-bottom: 18px; font-size: 11px; }
-  .hero-sarlavha { font-size: clamp(40px, 12.6vw, 72px); }
+  .hero-sarlavha { font-size: clamp(40px, 13vw, 70px); }
   .hero-sahna { aspect-ratio: auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
   .sahna-karta { position: relative; inset: auto; width: auto; height: auto; aspect-ratio: 3 / 4; border-radius: 14px; animation: none; transform: none; left: auto; right: auto; top: auto; bottom: auto; }
   .sahna-yorliq b { margin-left: 0; }
