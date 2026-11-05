@@ -6,10 +6,11 @@
   <title>Aliyevs Store — kiyim va poyabzal do'koni</title>
   <meta name="description" content="Aliyevs Store — Andijondagi zamonaviy kiyim va poyabzal do'koni. Sport va kundalik kolleksiya, Telegram orqali buyurtma.">
   <meta name="theme-color" content="#0b0b0c">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -17,8 +18,7 @@
   <header class="menyu">
     <div class="menyu-ichi">
       <a href="#" class="logo" aria-label="Aliyevs Store — bosh sahifa">
-        <svg class="logo-belgi" viewBox="0 0 154 150" aria-hidden="true"><path d="M70 0l12 21-50 109h110l12 20H0z"/><path d="M88 22l7-12 42 100h-22z"/><path d="M64 110l17-28 17 28z"/></svg>
-        <span class="logo-yozuv"><b>ALIYEVS</b><small>STORE</small></span>
+        <img src="logo.png" alt="Aliyevs Store" width="514" height="325">
       </a>
 
       <nav class="havolalar" aria-label="Asosiy menyu">
@@ -50,37 +50,45 @@
   <main>
     <!-- ================= HERO ================= -->
     <section class="hero">
+      <div class="hero-fon" aria-hidden="true">
+        <img src="img/hero-fon.webp" alt="">
+      </div>
       <div class="hero-ichi">
         <div class="hero-matn">
-          <p class="ustki">Kuz — Qish 2026 · Andijon</p>
-          <h1>Uslubni<br><span class="kontur">siz</span> tanlaysiz.</h1>
-          <p class="hero-izoh">Kurtka, hudi va krossovkalar — tanlab olingan 20 ta model. Buyurtma bir necha bosishda, yetkazib berish ertasigayoq.</p>
+          <p class="hero-pill"><span class="tirik"></span>Yangi tovarlar har hafta · Andijon</p>
+          <h1 class="hero-sarlavha">
+            <span class="q q1">Kiy.</span>
+            <span class="q q2">Yur.</span>
+            <span class="q q3">Esda qol.</span>
+          </h1>
+          <p class="hero-izoh">Kurtka, hudi va krossovkalar — har biri qo'lda tanlangan. Buyurtma Telegram orqali, Andijon bo'ylab yetkazib berish ertasigayoq.</p>
           <div class="hero-tugmalar">
-            <a href="#katalog-bolim" class="tugma asosiy glow">Katalogni ko'rish</a>
-            <a href="#katalog-bolim" class="tugma glow" data-filtr="sport">Sport kolleksiya</a>
+            <a href="#katalog-bolim" class="tugma asosiy glow">Katalogni ko'rish <span aria-hidden="true">→</span></a>
+            <a href="#katalog-bolim" class="tugma shaffof glow" data-filtr="sport">Sport kolleksiya</a>
           </div>
           <dl class="hero-raqamlar">
-            <div><dt>20</dt><dd>model</dd></div>
-            <div><dt>1 kun</dt><dd>yetkazish</dd></div>
+            <div><dt>20</dt><dd>tanlangan model</dd></div>
+            <div><dt>1 kun</dt><dd>yetkazib berish</dd></div>
             <div><dt>14 kun</dt><dd>almashtirish</dd></div>
           </dl>
         </div>
 
-        <div class="hero-kollaj">
-          <button class="kollaj-rasm k1 glow" data-tovar="7">
+        <div class="hero-sahna">
+          <button class="sahna-karta s1 glow" data-tovar="7">
             <img src="img/p07-1.webp" alt="Tvid kurtka kapyushonli">
-            <span class="kollaj-yorliq">Tvid kurtka <b>690 000</b></span>
+            <span class="sahna-yorliq"><small>Yangi</small>Tvid kurtka <b>690 000</b></span>
           </button>
-          <button class="kollaj-rasm k2 glow" data-tovar="19">
+          <button class="sahna-karta s2 glow" data-tovar="19">
             <img src="img/p19-sariq-3.webp" alt="Paypoq-krossovka Blade">
-            <span class="kollaj-yorliq">«Blade» <b>450 000</b></span>
+            <span class="sahna-yorliq"><small>−13%</small>«Blade» <b>450 000</b></span>
           </button>
-          <button class="kollaj-rasm k3 glow" data-tovar="2">
+          <button class="sahna-karta s3 glow" data-tovar="2">
             <img src="img/p02-1.webp" alt="Charm kurtka, velvet yoqa">
-            <span class="kollaj-yorliq">Charm kurtka <b>790 000</b></span>
+            <span class="sahna-yorliq"><small>Xit</small>Charm kurtka <b>790 000</b></span>
           </button>
         </div>
       </div>
+      <a href="#katalog-bolim" class="hero-pastga" aria-label="Katalogga tushish"><span></span></a>
     </section>
 
     <!-- ================= YUGURUVCHI LENTA ================= -->
@@ -94,11 +102,13 @@
     <!-- ================= TURKUMLAR ================= -->
     <section class="turkum-plitkalar bolim">
       <button class="plitka glow" data-filtr="sport" data-katalogga>
-        <img src="img/p13-2.webp" alt="" loading="lazy">
+        <img class="plitka-fon" src="img/p13-2.webp" alt="" loading="lazy" aria-hidden="true">
+        <img class="plitka-rasm" src="img/p13-2.webp" alt="" loading="lazy">
         <span class="plitka-matn"><small>Kolleksiya</small><b>Sport</b><em><span data-sanoq="sport">6</span> ta model →</em></span>
       </button>
       <button class="plitka glow" data-filtr="boshqa" data-katalogga>
-        <img src="img/p11-bordo-1.webp" alt="" loading="lazy">
+        <img class="plitka-fon" src="img/p02-2.webp" alt="" loading="lazy" aria-hidden="true">
+        <img class="plitka-rasm" src="img/p02-2.webp" alt="" loading="lazy">
         <span class="plitka-matn"><small>Kolleksiya</small><b>Boshqa</b><em><span data-sanoq="boshqa">14</span> ta model →</em></span>
       </button>
     </section>
@@ -145,16 +155,29 @@
 
   <!-- ================= FOOTER ================= -->
   <footer id="aloqa" class="pastki">
+    <div class="pastki-cta">
+      <div class="cta-matn">
+        <p class="ustki">Aloqa</p>
+        <h2>Savolingiz bormi?<br><span>Telegramda yozing.</span></h2>
+        <p>Buyurtma, o'lcham yoki yetkazib berish haqida so'rang — shaxsan javob beramiz.</p>
+      </div>
+      <a class="tg-tugma glow" id="tg-katta" href="https://t.me/Aliyevvv_a" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4 3 11l6.5 2.2M21 4l-3 16-8.5-6.8M21 4 9.5 13.2V19l3-3.4"/></svg>
+        <span><small>Telegram</small><b id="tg-katta-nomi">@Aliyevvv_a</b></span>
+        <i aria-hidden="true">↗</i>
+      </a>
+    </div>
+
     <div class="pastki-ichi">
       <div class="pastki-logo">
-        <svg class="logo-belgi" viewBox="0 0 154 150" aria-hidden="true"><path d="M70 0l12 21-50 109h110l12 20H0z"/><path d="M88 22l7-12 42 100h-22z"/><path d="M64 110l17-28 17 28z"/></svg>
-        <span class="logo-yozuv katta"><b>ALIYEVS</b><small>STORE</small></span>
+        <img src="logo.png" alt="Aliyevs Store" width="514" height="325" loading="lazy">
+        <p>Andijondagi zamonaviy kiyim va poyabzal do'koni.</p>
       </div>
       <div>
         <h4>Aloqa</h4>
-        <p>📍 <span id="shahar">Andijon</span></p>
-        <p>🕘 <span id="ish-vaqti"></span></p>
-        <p>✈️ Telegram: <a id="tg-havola" target="_blank" rel="noopener"></a></p>
+        <p><span class="ik">📍</span><span id="shahar">Andijon</span></p>
+        <p><span class="ik">🕘</span><span id="ish-vaqti"></span></p>
+        <p><span class="ik">✈️</span><a id="tg-havola" target="_blank" rel="noopener"></a></p>
       </div>
       <div>
         <h4>Do'kon</h4>
@@ -162,7 +185,15 @@
         <p><a href="#katalog-bolim" data-filtr="boshqa">Boshqa</a></p>
         <p><a href="#katalog-bolim" data-filtr="sevimli">Sevimlilar</a></p>
       </div>
+      <div>
+        <h4>Xizmatlar</h4>
+        <p>Yetkazib berish — 1 kun</p>
+        <p>Kiyib ko'rib to'lash</p>
+        <p>14 kun almashtirish</p>
+      </div>
     </div>
+
+    <div class="pastki-gigant" aria-hidden="true"><span>ALIYEVS</span><span>STORE</span></div>
     <p class="mualliflik">© <span id="yil">2026</span> <span data-dokon-nomi>Aliyevs Store</span> · Barcha huquqlar himoyalangan</p>
   </footer>
 

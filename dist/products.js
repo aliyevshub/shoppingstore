@@ -11,7 +11,7 @@ const DOKON = {
     ishVaqti: "Har kuni 09:00 – 21:00",
     // Buyurtmalar keladigan Telegram username (@ belgisisiz).
     // Bo'sh qolsa, buyurtma matni ekranda ko'rsatiladi va nusxalanadi.
-    telegram: "",
+    telegram: "Aliyevvv_a",
 };
 const TURKUM_NOMLARI = { sport: "Sport", boshqa: "Boshqa" };
 const KIYIM_OLCHAM = ["S", "M", "L", "XL", "XXL"];
