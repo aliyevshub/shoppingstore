@@ -63,6 +63,7 @@
             $("#kirish").hidden = true;
             $("#panel").hidden = false;
             await royxatniYukla();
+            botHolati();
             return true;
         }
         catch (e) {
@@ -82,6 +83,54 @@
         $("#panel").hidden = true;
         $("#kirish").hidden = false;
         $("#parol").value = "";
+    }
+    async function botHolati() {
+        const holat = $("#tg-holat");
+        const tugmalar = $("#tg-tugmalar");
+        try {
+            const h = await so_rov("/api/admin/telegram");
+            if (!h.token) {
+                holat.innerHTML = "Bot hali sozlanmagan. Cloudflare'ga <b>TELEGRAM_TOKEN</b> qo'shing.";
+                tugmalar.innerHTML = "";
+            }
+            else if (h.xato) {
+                holat.textContent = h.xato;
+                tugmalar.innerHTML = "";
+            }
+            else if (!h.chat) {
+                holat.innerHTML = `Bot: <b>@${xavfsiz(h.bot || "")}</b> · buyurtmalar qabul qilinmaydi, avval botni ulang.`;
+                tugmalar.innerHTML = `<button class="tugma asosiy glow" type="button" data-tg="kod">Botni ulash</button>`;
+            }
+            else {
+                holat.innerHTML = `<span class="ok">● Ulangan</span> · Bot: <b>@${xavfsiz(h.bot || "")}</b> · Xabarlar: <b>${xavfsiz(h.chat)}</b>`;
+                tugmalar.innerHTML = `<button class="tugma glow" type="button" data-tg="sinov">Sinov xabari</button><button class="tugma glow" type="button" data-tg="kod">Qayta ulash</button>`;
+            }
+        }
+        catch (e) {
+            holat.textContent = e.message;
+        }
+    }
+    async function botAmal(nima) {
+        try {
+            if (nima === "kod") {
+                const { havola } = await so_rov("/api/admin/telegram/kod", { method: "POST" });
+                window.open(havola, "_blank", "noopener");
+                $("#tg-holat").innerHTML = `<ol><li>Ochilgan Telegram'da <b>«Start»</b> (yoki «Запустить») tugmasini bosing.</li><li>So'ng shu yerga qaytib, <b>«Tasdiqlash»</b> ni bosing.</li></ol>`;
+                $("#tg-tugmalar").innerHTML = `<a class="tugma glow" href="${xavfsiz(havola)}" target="_blank" rel="noopener">Botni ochish ↗</a><button class="tugma asosiy glow" type="button" data-tg="tasdiq">Tasdiqlash</button>`;
+            }
+            if (nima === "tasdiq") {
+                const { chat } = await so_rov("/api/admin/telegram/tasdiq", { method: "POST" });
+                xabar(`Bot ulandi ✓ Xabarlar: ${chat}`);
+                await botHolati();
+            }
+            if (nima === "sinov") {
+                await so_rov("/api/admin/telegram/sinov", { method: "POST" });
+                xabar("Sinov xabari yuborildi ✓ Telegram'ni tekshiring");
+            }
+        }
+        catch (e) {
+            xabar(e.message);
+        }
     }
     // ------------------------------------------------------------------
     // RO'YXAT
@@ -297,6 +346,11 @@
         tugma.textContent = "Kirish";
     });
     $("#chiqish").addEventListener("click", chiqish);
+    $("#tg-tugmalar").addEventListener("click", (e) => {
+        const b = e.target.closest("[data-tg]");
+        if (b)
+            botAmal(b.dataset.tg);
+    });
     $("#yangi-tovar").addEventListener("click", () => formaniOch());
     $("#royxat").addEventListener("click", (e) => {
         const b = e.target.closest("[data-amal]");

@@ -8,7 +8,7 @@ Zamonaviy kiyim do'koni sayti: katalog, filtr, qidiruv, savatcha va Telegram orq
 - ♥ Sevimlilar
 - 🔍 Turkum bo'yicha filtr, qidiruv, narx bo'yicha saralash
 - 🛒 Savatcha: o'lcham tanlash, sonini o'zgartirish (brauzerda saqlanadi)
-- 📲 Buyurtma Telegram orqali yuboriladi
+- 📲 Buyurtma va izohlar Telegram bot orqali do'kon egasiga keladi
 - 📱 Telefon va kompyuterga moslashgan
 
 ## Tuzilishi
@@ -46,7 +46,8 @@ Manzil: `/admin` (masalan, `https://aliyevs-store.aliyevofficial0011.workers.dev
 
 ### Cloudflare sozlamalari
 1. **D1 baza:** `aliyevs-store-db` nomli baza yaratiladi va `wrangler.jsonc` ga `DB` nomi bilan ulanadi
-2. **Login va parol:** Workers & Pages → aliyevs-store → Settings → Variables and Secrets → `ADMIN_LOGIN` va `ADMIN_PAROL` (turi: Secret)
+2. **Telegram bot:** @BotFather tokeni → `TELEGRAM_TOKEN` (Secret); keyin admin panelda «Botni ulash»
+3. **Login va parol:** Workers & Pages → aliyevs-store → Settings → Variables and Secrets → `ADMIN_LOGIN` va `ADMIN_PAROL` (turi: Secret)
 
 ### Kompyuterda sinash
 ```bash

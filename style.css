@@ -581,21 +581,6 @@ select.glow-maydon { font-family: var(--f-brend); font-weight: 500;
   border-top: 1px solid #1d1d20;
 }
 .pastki .pastki-past p { display: block; margin: 0; font-size: 13px; color: #8e8b84; }
-.savol { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-family: var(--f-brend); font-weight: 500; font-size: 13px; color: #8e8b84; }
-.pastki a.tg-mini {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 4px 12px 4px 4px; border-radius: 999px;
-  background: var(--sirt); border: 1px solid var(--chiziq); color: var(--matn);
-  background-image: none;
-}
-.tg-mini svg { width: 26px; height: 26px; padding: 6px; border-radius: 50%; background: var(--aksent); fill: none; stroke: #0b0b0c; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; transition: transform .3s; }
-.tg-mini span { display: flex; flex-direction: column; line-height: 1.15; }
-.tg-mini small { font-family: var(--f-brend); font-weight: 500; font-size: 8.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--matn-2); }
-.tg-mini b { font-family: var(--f-brend); font-weight: 600; font-size: 12.5px; }
-.tg-mini i { font-style: normal; font-size: 12px; color: var(--aksent); transition: transform .3s; }
-.pastki a.tg-mini:hover { background: var(--sirt-2); color: var(--matn); }
-.tg-mini:hover svg { transform: rotate(-12deg); }
-.tg-mini:hover i { transform: translate(2px, -2px); }
 
 /* =====================================================================
    SAVATCHA
@@ -932,3 +917,12 @@ dialog::backdrop { background: rgba(0,0,0,.7); backdrop-filter: blur(4px); }
 /* Hero: krossovka kartasi — poyabzal yozuv ostida qolmasin */
 .sahna-karta.s2 img { transform-origin: 50% 70%; transform: scale(1.18) translateY(-17%); }
 .sahna-karta.s2:hover img { transform: scale(1.24) translateY(-17%); }
+
+/* Buyurtma: robotlar uchun yashirin maydon va "qabul qilindi" oynasi */
+.yashirin-maydon { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; opacity: 0; }
+.buyurtma-qabul { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; padding: 8px 0 4px; }
+.buyurtma-qabul[hidden] { display: none; }
+.qabul-belgi { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; font-size: 30px; font-weight: 700; color: #0b0b0c; background: var(--aksent); box-shadow: 0 0 40px -6px var(--aksent-xira); animation: qabul .5s cubic-bezier(.2,.9,.25,1.35); }
+@keyframes qabul { from { transform: scale(.4); opacity: 0; } }
+.buyurtma-qabul h3 { padding-right: 0; }
+.buyurtma-qabul p { margin: 0 0 8px; }

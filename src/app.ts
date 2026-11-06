@@ -408,33 +408,36 @@ function izohlarHTML(m: Mahsulot): string {
         <label>Ismingiz<input id="o-ism" name="ism" autocomplete="given-name" required placeholder="Ismingizni yozing"></label>
         <label>Izohingiz<textarea id="o-matn" name="matn" rows="3" required placeholder="Izohingizni yozing"></textarea></label>
         <span class="t-xato" id="izoh-xato" hidden>Baho, ism va izohni to'ldiring</span>
-        <button class="tugma asosiy glow toliq" type="submit">Telegram orqali yuborish</button>
+        <button class="tugma asosiy glow toliq" type="submit">Izohni yuborish</button>
         <small class="izoh-izoh">Izohlar tekshirilgandan so'ng saytda e'lon qilinadi.</small>
       </form>
     </div>
   </section>`;
 }
 
-function izohYubor(m: Mahsulot): void {
+async function izohYubor(m: Mahsulot): Promise<void> {
   const ism = $<HTMLInputElement>("#o-ism").value.trim();
   const matn = $<HTMLTextAreaElement>("#o-matn").value.trim();
+  const xatoJoy = $("#izoh-xato");
   if (!oynaBaho || !ism || !matn) {
-    $("#izoh-xato").hidden = false;
+    xatoJoy.textContent = "Baho, ism va izohni to'ldiring";
+    xatoJoy.hidden = false;
     return;
   }
-  const xabarMatni = [
-    `⭐ Yangi izoh — ${DOKON.nomi}`,
-    "",
-    `Tovar: ${m.nomi} (#${m.id})`,
-    `Baho: ${"★".repeat(oynaBaho)}${"☆".repeat(5 - oynaBaho)} (${oynaBaho}/5)`,
-    `Ism: ${ism}`,
-    "",
-    matn,
-  ].join("\n");
-  window.open(`https://t.me/${DOKON.telegram}?text=${encodeURIComponent(xabarMatni)}`, "_blank", "noopener");
-  oynaBaho = 0;
-  xabar("Rahmat! Telegram ochildi — xabarni yuboring");
-  tovarOynasiniChiz();
+  const tugma = $<HTMLButtonElement>("#izoh-forma button[type=submit]");
+  tugma.disabled = true;
+  tugma.textContent = "Yuborilmoqda…";
+  try {
+    await serverga("/api/izoh", { tovarId: m.id, tovar: m.nomi, baho: oynaBaho, ism, matn });
+    oynaBaho = 0;
+    tovarOynasiniChiz();
+    xabar("Rahmat! Izohingiz yuborildi ✓");
+  } catch (e) {
+    xatoJoy.textContent = (e as Error).message;
+    xatoJoy.hidden = false;
+    tugma.disabled = false;
+    tugma.textContent = "Izohni yuborish";
+  }
 }
 
 function oynadanSavatga(): void {
@@ -510,38 +513,49 @@ function savatniOch(ochiq: boolean): void {
 // BUYURTMA
 // ---------------------------------------------------------------------
 
-function buyurtmaMatni(ism: string, tel: string, manzil: string, izoh: string): string {
-  const q = savat.map((s, i) => {
-    const m = mahsulotTop(s.id)!;
-    const vr = m.variantlar[s.variant] ?? m.variantlar[0];
-    return `${i + 1}. ${m.nomi} — ${vr.rang}, ${s.olcham} × ${s.soni} = ${narxMatn(m.narx * s.soni)}`;
-  });
-  return [
-    `🛍 Yangi buyurtma — ${DOKON.nomi}`,
-    "",
-    ...q,
-    "",
-    `💰 Jami: ${narxMatn(savatJami())}`,
-    "",
-    `👤 Ism: ${ism}`,
-    `📞 Telefon: ${tel}`,
-    `📍 Manzil: ${manzil}`,
-    ...(izoh ? [`📝 Izoh: ${izoh}`] : []),
-  ].join("\n");
+// Serverga JSON yuborish (xato bo'lsa, tushunarli matn bilan)
+async function serverga(yol: string, malumot: unknown): Promise<void> {
+  let javob: Response;
+  try {
+    javob = await fetch(yol, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(malumot) });
+  } catch {
+    throw new Error("Internet aloqasini tekshirib, qayta urinib ko'ring.");
+  }
+  if (!javob.ok) {
+    const j = (await javob.json().catch(() => ({}))) as { xato?: string };
+    throw new Error(j.xato || "Yuborib bo'lmadi. Birozdan keyin urinib ko'ring.");
+  }
 }
 
-function buyurtmaYubor(e: SubmitEvent): void {
+async function buyurtmaYubor(e: SubmitEvent): Promise<void> {
   e.preventDefault();
-  const d = new FormData(e.target as HTMLFormElement);
+  const forma = e.target as HTMLFormElement;
+  const d = new FormData(forma);
   const ol = (k: string) => String(d.get(k) ?? "").trim();
-  const matn = buyurtmaMatni(ol("ism"), ol("tel"), ol("manzil"), ol("izoh"));
-  if (DOKON.telegram) {
-    window.open(`https://t.me/${DOKON.telegram}?text=${encodeURIComponent(matn)}`, "_blank", "noopener");
-    xabar("Telegram ochildi — xabarni yuboring");
-  } else {
-    $<HTMLTextAreaElement>("#tayyor-matn").value = matn;
+  const xatoJoy = $("#buyurtma-xato");
+  xatoJoy.hidden = true;
+  const qatorlar = savat.map((q) => {
+    const m = mahsulotTop(q.id)!;
+    const vr = m.variantlar[q.variant] ?? m.variantlar[0];
+    return { id: m.id, nomi: m.nomi, rang: vr.rang, olcham: q.olcham, soni: q.soni, narx: m.narx };
+  });
+  const tugma = $<HTMLButtonElement>("#buyurtma-forma button[type=submit]");
+  tugma.disabled = true;
+  tugma.textContent = "Yuborilmoqda…";
+  try {
+    await serverga("/api/buyurtma", { ism: ol("ism"), tel: ol("tel"), manzil: ol("manzil"), izoh: ol("izoh"), sayt: ol("sayt"), qatorlar });
+    savat = [];
+    savatniSaqla();
+    savatniChiz();
+    forma.reset();
     $("#oyna-forma").hidden = true;
     $("#oyna-natija").hidden = false;
+  } catch (err) {
+    xatoJoy.textContent = (err as Error).message;
+    xatoJoy.hidden = false;
+  } finally {
+    tugma.disabled = false;
+    tugma.textContent = "Buyurtmani yuborish";
   }
 }
 
@@ -710,16 +724,7 @@ function hodisalar(): void {
   $("#btn-buyurtma").addEventListener("click", () => buyurtmaOynasi(true));
   $("#btn-oyna-yop").addEventListener("click", () => buyurtmaOynasi(false));
   $("#buyurtma-forma").addEventListener("submit", (e) => buyurtmaYubor(e as SubmitEvent));
-  $("#btn-nusxa").addEventListener("click", async () => {
-    const ta = $<HTMLTextAreaElement>("#tayyor-matn");
-    try {
-      await navigator.clipboard.writeText(ta.value);
-      xabar("Nusxalandi ✓");
-    } catch {
-      ta.select();
-      xabar("Matnni belgilab, nusxalang");
-    }
-  });
+  $("#btn-natija-yop").addEventListener("click", () => buyurtmaOynasi(false));
 
   // Hero sarlavhasi: telefonda bosganda bir marta to'lqin
   const sarlavha = $(".hero-sarlavha");
@@ -744,14 +749,6 @@ function boshlash(): void {
   $("#shahar").textContent = DOKON.shahar;
   $("#ish-vaqti").textContent = DOKON.ishVaqti;
   $("#yil").textContent = String(new Date().getFullYear());
-  const tg = $<HTMLAnchorElement>("#tg-havola");
-  if (DOKON.telegram) {
-    tg.href = `https://t.me/${DOKON.telegram}`;
-    tg.textContent = "@" + DOKON.telegram;
-  } else {
-    tg.textContent = "tez orada";
-    tg.removeAttribute("href");
-  }
   sanoqlarniYangila();
   katalogniChiz();
   savatniChiz();

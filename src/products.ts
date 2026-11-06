@@ -9,9 +9,6 @@ const DOKON = {
   nomi: "Aliyevs Store",
   shahar: "Andijon",
   ishVaqti: "Har kuni 09:00 – 21:00",
-  // Buyurtmalar keladigan Telegram username (@ belgisisiz).
-  // Bo'sh qolsa, buyurtma matni ekranda ko'rsatiladi va nusxalanadi.
-  telegram: "Aliyevvv_a",
 };
 
 // ---- Tiplar ----

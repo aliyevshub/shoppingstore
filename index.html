@@ -177,7 +177,6 @@
         <h4>Aloqa</h4>
         <p><svg class="ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></svg><span id="shahar">Andijon</span></p>
         <p><svg class="ik" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><span id="ish-vaqti"></span></p>
-        <p><svg class="ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4 3 11l6.5 2.2M21 4l-3 16-8.5-6.8M21 4 9.5 13.2V19l3-3.4"/></svg><a id="tg-havola" target="_blank" rel="noopener"></a></p>
       </div>
       <div>
         <h4>Do'kon</h4>
@@ -193,13 +192,6 @@
       </div>
     </div>
     <div class="pastki-past">
-      <div class="savol"><span>Savol va takliflar uchun:</span>
-        <a class="tg-mini glow" href="https://t.me/Aliyevvv_a" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4 3 11l6.5 2.2M21 4l-3 16-8.5-6.8M21 4 9.5 13.2V19l3-3.4"/></svg>
-          <b>@Aliyevvv_a</b>
-          <i aria-hidden="true">↗</i>
-        </a>
-      </div>
       <p class="mualliflik">© <span id="yil">2026</span> <span data-dokon-nomi>Aliyevs Store</span> · Barcha huquqlar himoyalangan</p>
     </div>
   </footer>
@@ -235,14 +227,16 @@
         <label>Telefon raqam<input id="f-tel" name="tel" type="tel" required placeholder="+998 __ ___ __ __" autocomplete="tel"></label>
         <label>Manzil<input id="f-manzil" name="manzil" required placeholder="Shahar, ko'cha, uy" autocomplete="street-address"></label>
         <label>Izoh (ixtiyoriy)<textarea id="f-izoh" name="izoh" rows="2"></textarea></label>
-        <button class="tugma asosiy glow toliq" type="submit">Telegram orqali yuborish</button>
+        <input class="yashirin-maydon" name="sayt" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <span id="buyurtma-xato" class="t-xato" role="alert" hidden></span>
+        <button class="tugma asosiy glow toliq" type="submit">Buyurtmani yuborish</button>
       </form>
     </div>
-    <div id="oyna-natija" hidden>
-      <h3>Buyurtma tayyor ✓</h3>
-      <p>Do'kon Telegram manzili hali sozlanmagan. Matnni nusxalab, sotuvchiga yuboring:</p>
-      <textarea id="tayyor-matn" rows="10" readonly></textarea>
-      <button id="btn-nusxa" class="tugma asosiy glow toliq">Nusxalash</button>
+    <div id="oyna-natija" class="buyurtma-qabul" hidden>
+      <span class="qabul-belgi" aria-hidden="true">✓</span>
+      <h3>Buyurtmangiz qabul qilindi!</h3>
+      <p>Rahmat! Tez orada siz bilan bog'lanib, buyurtmani tasdiqlaymiz.</p>
+      <button id="btn-natija-yop" class="tugma asosiy glow toliq" type="button">Xaridni davom ettirish</button>
     </div>
   </dialog>
 

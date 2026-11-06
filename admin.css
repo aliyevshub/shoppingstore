@@ -131,3 +131,16 @@ body.admin::before { display: none; }
   .a-oyna-past { position: sticky; bottom: calc(-18px - env(safe-area-inset-bottom, 0px)); background: var(--sirt); padding-bottom: 4px; }
   .a-oyna-past .tugma { flex: 1; }
 }
+
+/* ---------- Telegram bot bo'limi ---------- */
+.a-bot { margin-top: 22px; padding: 18px 20px; border-radius: 16px; background: var(--sirt); border: 1px solid var(--chiziq); display: flex; flex-wrap: wrap; gap: 14px 20px; align-items: center; justify-content: space-between; }
+.a-bot-bosh { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.a-bot-belgi { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--aksent); flex-shrink: 0; }
+.a-bot-belgi svg { width: 22px; height: 22px; fill: none; stroke: #0b0b0c; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.a-bot h2 { font-size: 16px; font-weight: 700; }
+.a-bot .a-izoh { margin-top: 3px; }
+.a-bot .a-izoh b { color: var(--matn); }
+.a-bot .ok { color: #5be38a; }
+.a-bot-tugmalar { display: flex; flex-wrap: wrap; gap: 8px; }
+.a-bot-tugmalar .tugma { min-height: 40px; padding: 0 16px; font-size: 13.5px; }
+.a-bot ol { margin: 6px 0 0; padding-left: 18px; color: var(--matn-2); font-size: 13px; }

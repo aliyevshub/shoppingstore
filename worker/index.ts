@@ -7,7 +7,13 @@
 //   Hamma uchun:
 //     GET    /api/tovarlar              — saytda ko'rinadigan yangi tovarlar
 //     GET    /api/rasm/:id              — yuklangan rasm
+//     POST   /api/buyurtma              — buyurtma (Telegram botga yuboriladi)
+//     POST   /api/izoh                  — tovarga izoh (Telegram botga yuboriladi)
 //   Faqat admin (login va parol bilan):
+//     GET    /api/admin/telegram        — bot holati
+//     POST   /api/admin/telegram/kod    — botni ulash havolasi
+//     POST   /api/admin/telegram/tasdiq — /start bosilganini tekshirib, ulash
+//     POST   /api/admin/telegram/sinov  — sinov xabari
 //     GET    /api/admin/tekshir         — parol to'g'rimi?
 //     GET    /api/admin/tovarlar        — barcha tovarlar (yashirinlari ham)
 //     POST   /api/admin/tovarlar        — yangi tovar
@@ -23,6 +29,8 @@ interface Env {
   DB?: any;              // D1 ma'lumotlar bazasi
   ADMIN_LOGIN?: string;  // Cloudflare'da "Secret" sifatida saqlanadi
   ADMIN_PAROL?: string;  // Cloudflare'da "Secret" sifatida saqlanadi
+  TELEGRAM_TOKEN?: string; // @BotFather bergan token ("Secret")
+  TELEGRAM_API?: string;   // faqat sinov uchun (odatda bo'sh)
   ASSETS: { fetch(req: Request): Promise<Response> };
 }
 
@@ -60,6 +68,15 @@ async function jadvallar(db: any): Promise<void> {
       yashirin   INTEGER NOT NULL DEFAULT 0,
       variantlar TEXT    NOT NULL,
       yaratilgan TEXT    NOT NULL DEFAULT (datetime('now'))
+    )`),
+    db.prepare(`CREATE TABLE IF NOT EXISTS sozlamalar (
+      kalit  TEXT PRIMARY KEY,
+      qiymat TEXT NOT NULL
+    )`),
+    db.prepare(`CREATE TABLE IF NOT EXISTS sorovlar (
+      ip    TEXT NOT NULL,
+      turi  TEXT NOT NULL,
+      vaqt  INTEGER NOT NULL
     )`),
     db.prepare(`CREATE TABLE IF NOT EXISTS rasmlar (
       id         TEXT PRIMARY KEY,
@@ -156,6 +173,84 @@ async function keraksizRasmlarniTozala(db: any, nomzodlar: string[]): Promise<vo
 }
 
 // ---------------------------------------------------------------------
+// TELEGRAM BOT
+// ---------------------------------------------------------------------
+
+async function sozlama(db: any, kalit: string): Promise<string | null> {
+  const q = await db.prepare("SELECT qiymat FROM sozlamalar WHERE kalit = ?").bind(kalit).first();
+  return q ? q.qiymat : null;
+}
+async function sozlamaYoz(db: any, kalit: string, qiymat: string): Promise<void> {
+  await db.prepare("INSERT INTO sozlamalar (kalit, qiymat) VALUES (?, ?) ON CONFLICT(kalit) DO UPDATE SET qiymat = excluded.qiymat").bind(kalit, qiymat).run();
+}
+
+let tgManzil = "https://api.telegram.org";
+async function tg(token: string, usul: string, malumot: unknown = {}): Promise<any> {
+  const javob = await fetch(`${tgManzil}/bot${token}/${usul}`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(malumot),
+  });
+  const j: any = await javob.json().catch(() => ({}));
+  if (!j.ok) throw new Error(j.description || "Telegram javob bermadi");
+  return j.result;
+}
+
+const h = (m: string) => m.replace(/[&<>]/g, (b) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[b]!));
+const somMatn = (n: number) => Math.round(n).toLocaleString("ru-RU").replace(/\u00a0/g, " ") + " so'm";
+
+// Botga xabar yuborish (bot va admin chati sozlangan bo'lishi kerak)
+async function botgaYubor(env: Env, matn: string): Promise<void> {
+  if (!env.TELEGRAM_TOKEN) throw new Error("bot");
+  const chat = await sozlama(env.DB, "tg_chat");
+  if (!chat) throw new Error("bot");
+  await tg(env.TELEGRAM_TOKEN, "sendMessage", { chat_id: Number(chat), text: matn, parse_mode: "HTML", disable_web_page_preview: true });
+}
+
+// Bitta IP manzildan juda ko'p so'rovni cheklash
+async function cheklov(db: any, req: Request, turi: string, max: number, daqiqa: number): Promise<boolean> {
+  const ip = req.headers.get("cf-connecting-ip") || "nomalum";
+  const hozir = Date.now();
+  await db.prepare("DELETE FROM sorovlar WHERE vaqt < ?").bind(hozir - 24 * 3600_000).run();
+  const q = await db.prepare("SELECT COUNT(*) AS soni FROM sorovlar WHERE ip = ? AND turi = ? AND vaqt > ?").bind(ip, turi, hozir - daqiqa * 60_000).first();
+  if ((q?.soni ?? 0) >= max) return false;
+  await db.prepare("INSERT INTO sorovlar (ip, turi, vaqt) VALUES (?, ?, ?)").bind(ip, turi, hozir).run();
+  return true;
+}
+
+const qisqa = (v: unknown, max: number) => String(v ?? "").trim().slice(0, max);
+
+function buyurtmaXabari(b: any): string | { matn: string } {
+  const ism = qisqa(b?.ism, 60), tel = qisqa(b?.tel, 30), manzil = qisqa(b?.manzil, 200), izoh = qisqa(b?.izoh, 500);
+  if (ism.length < 2) return "Ismingizni kiriting";
+  if (!/^[+\d][\d\s()\-]{6,20}$/.test(tel)) return "Telefon raqamni to'g'ri kiriting";
+  if (manzil.length < 3) return "Manzilni kiriting";
+  if (!Array.isArray(b?.qatorlar) || !b.qatorlar.length || b.qatorlar.length > 30) return "Savatcha bo'sh";
+  let jami = 0;
+  const qatorlar: string[] = [];
+  for (const [i, q] of b.qatorlar.entries()) {
+    const soni = Math.round(Number(q?.soni)), narx = Math.round(Number(q?.narx));
+    if (!(soni >= 1 && soni <= 50) || !(narx >= 0 && narx <= 100_000_000)) return "Savatcha ma'lumoti noto'g'ri";
+    jami += soni * narx;
+    qatorlar.push(`${i + 1}. <b>${h(qisqa(q?.nomi, 80))}</b> — ${h(qisqa(q?.rang, 30))}, ${h(qisqa(q?.olcham, 10))} × ${soni} = ${somMatn(soni * narx)}`);
+  }
+  return {
+    matn: [
+      "🛍 <b>Yangi buyurtma — Aliyevs Store</b>",
+      "",
+      ...qatorlar,
+      "",
+      `💰 <b>Jami: ${somMatn(jami)}</b>`,
+      "",
+      `👤 Ism: ${h(ism)}`,
+      `📞 Telefon: ${h(tel)}`,
+      `📍 Manzil: ${h(manzil)}`,
+      ...(izoh ? [`📝 Izoh: ${h(izoh)}`] : []),
+    ].join("\n"),
+  };
+}
+
+// ---------------------------------------------------------------------
 // SO'ROVLARNI BOSHQARISH
 // ---------------------------------------------------------------------
 
@@ -183,6 +278,42 @@ async function api(req: Request, env: Env, url: URL): Promise<Response> {
     return new Response(new Uint8Array(q.malumot), {
       headers: { "content-type": q.turi, "cache-control": "public, max-age=31536000, immutable" },
     });
+  }
+
+  // ---- Hamma uchun: buyurtma va izoh (Telegram botga) ----
+  if ((yol === "/api/buyurtma" || yol === "/api/izoh") && usul === "POST") {
+    if (!env.DB || !env.TELEGRAM_TOKEN) return xato("Buyurtma qabul qilish vaqtincha ishlamayapti. Birozdan keyin urinib ko'ring.", 503);
+    await jadvallar(env.DB);
+    const b: any = await req.json().catch(() => null);
+    if (b?.sayt) return json({ ok: true }); // robotlar uchun yashirin maydon
+    const buyurtma = yol === "/api/buyurtma";
+    if (!(await cheklov(env.DB, req, buyurtma ? "buyurtma" : "izoh", buyurtma ? 5 : 8, 10)))
+      return xato("Juda ko'p so'rov yuborildi. 10 daqiqadan keyin urinib ko'ring.", 429);
+    let matn: string;
+    if (buyurtma) {
+      const x = buyurtmaXabari(b);
+      if (typeof x === "string") return xato(x);
+      matn = x.matn;
+    } else {
+      const ism = qisqa(b?.ism, 60), izoh = qisqa(b?.matn, 1000), baho = Math.round(Number(b?.baho));
+      if (ism.length < 2 || izoh.length < 2 || !(baho >= 1 && baho <= 5)) return xato("Baho, ism va izohni to'ldiring");
+      matn = [
+        "⭐ <b>Yangi izoh — Aliyevs Store</b>",
+        "",
+        `Tovar: <b>${h(qisqa(b?.tovar, 80))}</b> (#${Math.round(Number(b?.tovarId)) || "?"})`,
+        `Baho: ${"★".repeat(baho)}${"☆".repeat(5 - baho)} (${baho}/5)`,
+        `Ism: ${h(ism)}`,
+        "",
+        h(izoh),
+      ].join("\n");
+    }
+    try {
+      await botgaYubor(env, matn);
+    } catch (e) {
+      console.error(e);
+      return xato("Buyurtma qabul qilish vaqtincha ishlamayapti. Birozdan keyin urinib ko'ring.", 503);
+    }
+    return json({ ok: true });
   }
 
   // ---- Admin: parol tekshiruvi ----
@@ -248,6 +379,48 @@ async function api(req: Request, env: Env, url: URL): Promise<Response> {
       }
     }
 
+    // ---- Telegram bot sozlamalari ----
+    if (yol === "/api/admin/telegram" && usul === "GET") {
+      if (!env.TELEGRAM_TOKEN) return json({ token: false });
+      try {
+        const bot = await tg(env.TELEGRAM_TOKEN, "getMe");
+        return json({ token: true, bot: bot.username, chat: await sozlama(db, "tg_chat_nomi") });
+      } catch (e) {
+        return json({ token: true, xato: "Token noto'g'ri: " + (e as Error).message });
+      }
+    }
+    if (yol === "/api/admin/telegram/kod" && usul === "POST") {
+      if (!env.TELEGRAM_TOKEN) return xato("TELEGRAM_TOKEN sozlanmagan");
+      const bot = await tg(env.TELEGRAM_TOKEN, "getMe");
+      const kod = [...crypto.getRandomValues(new Uint8Array(8))].map((b) => b.toString(16).padStart(2, "0")).join("");
+      await sozlamaYoz(db, "tg_kod", kod);
+      return json({ havola: `https://t.me/${bot.username}?start=${kod}`, bot: bot.username });
+    }
+    if (yol === "/api/admin/telegram/tasdiq" && usul === "POST") {
+      if (!env.TELEGRAM_TOKEN) return xato("TELEGRAM_TOKEN sozlanmagan");
+      const kod = await sozlama(db, "tg_kod");
+      if (!kod) return xato("Avval «Botni ulash» tugmasini bosing");
+      const yangilanishlar: any[] = await tg(env.TELEGRAM_TOKEN, "getUpdates", { allowed_updates: ["message"] });
+      const topildi = yangilanishlar.reverse().find((u) => u.message?.text === `/start ${kod}`);
+      if (!topildi) return xato("Botda «Start» bosilmagan. Havolani ochib, «Start» tugmasini bosing.");
+      const c = topildi.message.chat;
+      const nomi = c.username ? "@" + c.username : [c.first_name, c.last_name].filter(Boolean).join(" ") || String(c.id);
+      await sozlamaYoz(db, "tg_chat", String(c.id));
+      await sozlamaYoz(db, "tg_chat_nomi", nomi);
+      await db.prepare("DELETE FROM sozlamalar WHERE kalit = 'tg_kod'").run();
+      await tg(env.TELEGRAM_TOKEN, "getUpdates", { offset: topildi.update_id + 1 });
+      await tg(env.TELEGRAM_TOKEN, "sendMessage", { chat_id: c.id, text: "✅ Bot ulandi! Endi Aliyevs Store buyurtmalari va izohlari shu yerga keladi." });
+      return json({ chat: nomi });
+    }
+    if (yol === "/api/admin/telegram/sinov" && usul === "POST") {
+      try {
+        await botgaYubor(env, "🔔 <b>Sinov xabari</b>\nAliyevs Store boti to'g'ri ishlayapti.");
+      } catch (e) {
+        return xato((e as Error).message === "bot" ? "Bot hali ulanmagan" : (e as Error).message);
+      }
+      return json({ ok: true });
+    }
+
     if (yol === "/api/admin/rasm" && usul === "POST") {
       const turi = (req.headers.get("content-type") ?? "").split(";")[0].trim();
       if (!["image/webp", "image/jpeg", "image/png"].includes(turi)) return xato("Faqat WebP, JPEG yoki PNG rasm");
@@ -266,6 +439,7 @@ async function api(req: Request, env: Env, url: URL): Promise<Response> {
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
+    if (env.TELEGRAM_API) tgManzil = env.TELEGRAM_API;
     if (url.pathname.startsWith("/api/")) {
       try {
         return await api(req, env, url);
